@@ -39,14 +39,54 @@ Passwords gemmes krypteret med BCrypt.
 
 ## 24-timers aflysningsregel
 
-Kunder kan aflyse eller ændre deres booking gratis hvis det sker mere end 24 timer før timen. Aflyses eller ændres inden for 24 timer, opkræves fuld pris for behandlingen.
+Kunder kan aflyse eller ændre deres booking gratis hvis det sker mere end 24 timer før timen. Aflyses eller ændres inden for 24 timer, opkræves fuld pris for behandlingen. Reglen valideres udelukkende server-side i `BookingService.isWithin24Hours()`.
+
+## User Stories
+
+| **Story** | **Points** |
+|-----------|------------|
+| Som kunde vil jeg kunne se ledige tider og vælge frisør og service, så jeg nemt kan booke en tid online. | 3 |
+| Som kunde vil jeg kunne aflyse min booking op til 24 timer før, så jeg bevarer fleksibilitet uden at salonen lider tab. | 2 |
+| Som kunde vil jeg kunne se mine egne bookinger på min side, så jeg har overblik over kommende aftaler. | 2 |
+| Som admin vil jeg kunne oprette og slette tider, frisører og services, så jeg har fuld kontrol over systemet. | 3 |
+| Som admin vil jeg kunne se alle bookinger, så jeg kan planlægge arbejdsdagen. | 2 |
+| Som kunde vil jeg kunne registrere mig og logge ind, så mine bookinger er tilknyttet min profil. | 2 |
+| Som system skal prisberegningen ske via en separat mikroservice, så prissætningslogikken kan opdateres uafhængigt. | 5 |
+
+## Scrum-proces
+
+Projektet er udviklet over 3 sprints med udgangspunkt i Scrum-frameworket.
+
+| **Sprint** | **Fokus** | **Leverede points** |
+|------------|-----------|-------------------|
+| Sprint 1 | Kernebooking — entiteter, repositories, booking-flow | 9 |
+| Sprint 2 | Adminpanel — CRUD til frisører, services og tider | 7 |
+| Sprint 3 | Sikkerhed & mikroservice — JWT, 24t-regel, CI/CD | 16 |
+| **Velocity** | Gennemsnit | **10,7 points/sprint** |
+
+**Scrum-artefakter brugt i projektet:**
+- **Product Backlog** — GitHub Issues med labels og story points
+- **Sprint Backlog** — GitHub Projects Kanban board
+- **Increment** — fungerende software leveret efter hvert sprint
+
+## Branching-strategi
+
+Projektet bruger en simpel trunk-based strategi:
+
+- `main` — stabil produktionskode, beskyttet branch
+- Feature branches navngives `feature/beskrivelse`
+- Pull requests kræver at CI-pipeline er grøn før merge
+- GitHub Actions kører automatisk tests på alle pull requests
 
 ## Sådan kører du projektet med Docker Compose
 
 **Krav:** Docker og Docker Compose skal være installeret.
 
 1. Klon repositoriet
-2. Opret en `.env` fil i projektets rodmappe med dine egne værdier:
+2. Kopier eksempel-filerne og udfyld dine egne værdier:
+    - `application-dev.properties.example` → `application-dev.properties`
+    - `application-test.properties.example` → `application-test.properties`
+3. Opret en `.env` fil i projektets rodmappe med dine egne værdier:
 
 ```
 MYSQL_ROOT_PASSWORD=ditPassword
@@ -56,12 +96,7 @@ SPRING_DATASOURCE_PASSWORD=ditPassword
 JWT_SECRET=salon-super-secret-jwt-key-minimum-32-chars
 ```
 
-## Lokalt udviklingsmiljø
-Kopier eksempel-filerne og udfyld dine egne værdier:
-- `application-dev.properties.example` → `application-dev.properties`
-- `application-test.properties.example` → `application-test.properties`
-
-3. Start applikationen:
+4. Start applikationen:
 
 ```bash
 docker compose up --build
@@ -72,8 +107,6 @@ Dette starter fire containers:
 - `salon-pricing` — pricing mikroservice på port 8081
 - `salon-app` — hovedapplikationen på port 8080
 - `nginx` — reverse proxy på port 80/443
-
-Seed scriptet `seed.sql` køres automatisk af MySQL når databasen starter første gang.
 
 Åbn derefter browseren og gå til: `http://localhost:8080`
 
@@ -110,13 +143,10 @@ Testene bruger Mockito til unit tests og H2 in-memory database til integrationst
 
 ## CI/CD
 
-Projektet har en GitHub Actions pipeline der automatisk:
-1. Kører alle tests
-2. Bygger JAR-filen
-3. Bygger og pusher Docker image til Docker Hub
-4. Deployer til serveren via SSH
+Projektet har to GitHub Actions workflows:
 
-Pipeline konfigurationen findes i `.github/workflows/ci.yml`.
+- **CI** (`ci.yml`) — kører automatisk tests på alle pull requests mod main
+- **Publish** (`publish.yml`) — bygger og pusher Docker image til GitHub Container Registry ved push til main
 
 ## Wireframes
 
