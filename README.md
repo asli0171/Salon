@@ -6,6 +6,34 @@ Salon er et frisørbooking-system, der giver kunder mulighed for at se ledige ti
 
 Projektet følger en klassisk lagdelt arkitektur med mikroserviceudvidelse:
 
+## Kickoff og krav
+
+Projektet tog udgangspunkt i en reel frisørsalon som kunde. Kunden ønskede et online booking-system der kunne erstatte telefonbooking og give kunderne mulighed for selv at booke tider direkte på nettet.
+
+### MoSCoW-prioritering
+
+**Must have**
+- Kunder kan se ledige tider med frisør og service
+- Kunder kan booke en tid online
+- Admin kan administrere frisører, services og tider
+- Dobbeltbooking forhindres på databaseniveau
+- Passwords krypteres med BCrypt
+
+**Should have**
+- 24-timers aflysningsregel — kunden kan aflyse gratis op til 24 timer før
+- Prisberegning via separat mikroservice
+- CI/CD pipeline der tester og bygger automatisk
+
+**Could have**
+- Kundelogin og profilside — kunden ønskede dette for at slippe for telefonopkald og manuelt administrativt arbejde. Kunden var bevidst om at det tilføjer kompleksitet men vurderede det som et vigtigt mål for systemet
+- Adminpanel med overblik over alle bookinger
+
+**Won't have (i denne iteration)**
+- Betalingsintegration
+- SMS/email bekræftelse
+- Kalenderintegration
+
+
 ### Hovedapplikation (Salon)
 
 - **Controller** — modtager HTTP requests fra frontend og returnerer JSON via REST API
