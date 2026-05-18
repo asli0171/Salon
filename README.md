@@ -56,6 +56,11 @@ SPRING_DATASOURCE_PASSWORD=ditPassword
 JWT_SECRET=salon-super-secret-jwt-key-minimum-32-chars
 ```
 
+## Lokalt udviklingsmiljø
+Kopier eksempel-filerne og udfyld dine egne værdier:
+- `application-dev.properties.example` → `application-dev.properties`
+- `application-test.properties.example` → `application-test.properties`
+
 3. Start applikationen:
 
 ```bash
