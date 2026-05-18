@@ -1,6 +1,6 @@
 # Salon
 
-Salon er et frisørbooking-system, der giver kunder mulighed for at se ledige tider, vælge frisør og service, og gennemføre bookinger online. Kunder kan aflyse eller ændre deres booking, men skal gøre det senest 24 timer før — ellers opkræves fuld pris. Administratorer kan administrere frisører, services, slots og bookinger via et beskyttet adminpanel. Systemet er bygget med Spring Boot, MySQL og Docker.
+Salon er et frisørbooking-system, der giver kunder mulighed for at se ledige tider, vælge frisør og service, og gennemføre bookinger online. Kunder kan aflyse eller ændre deres booking, men skal gøre det senest 24 timer før — ellers opkræves fuld pris. Administratorer kan administrere frisører, services, tider og bookinger via et beskyttet adminpanel. Systemet er bygget med Spring Boot, MySQL og Docker.
 
 ## Arkitektur
 
@@ -31,7 +31,7 @@ Applikationen bruger Spring Security med sessionsbaseret autentifikation via coo
 - `ROLE_CUSTOMER` — adgang til booking og egne bookinger
 
 **Endpoints:**
-- Åbne: forsiden, services, ledige slots, login, registrering
+- Åbne: forsiden, services, ledige tider, login, registrering
 - Beskyttede (kunde): `/api/bookings/**`
 - Beskyttede (admin): `/api/admin/**`, `/api/services/**`, `/api/slots/**`
 
@@ -116,25 +116,19 @@ Pipeline konfigurationen findes i `.github/workflows/ci.yml`.
 ## Wireframes
 
 ### Forside
-
-![img.png](img.png)
+![Forside](docs/wireframes/img.png)
 
 ### Bookingside
-
-![img_1.png](img_1.png)
+![Bookingside](docs/wireframes/img_1.png)
 
 ### Adminpanel
-
-![img_2.png](img_2.png)
+![Adminpanel](docs/wireframes/img_2.png)
 
 ### Login
-
-![img_3.png](img_3.png)
+![Login](docs/wireframes/img_3.png)
 
 ### Min side
-
-![img_4.png](img_4.png)
+![Min side](docs/wireframes/img_4.png)
 
 ### Aflysningsmodal
-
-![img_5.png](img_5.png)
+![Aflysningsmodal](docs/wireframes/img_5.png)
