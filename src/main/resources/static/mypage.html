@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salon — Mine bookinger</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #C8A97E;
+            --beige: #EDE8DF;
+            --light: #F5F0E8;
+            --dark: #2C2C2A;
+            --muted: #8A7F6E;
+            --lbrown: #D4C9B8;
+            --dbrown: #B8956A;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--light);
+            color: var(--dark);
+            font-family: 'Jost', sans-serif;
+            font-weight: 300;
+            min-height: 100vh;
+        }
+
+        nav {
+            background: var(--beige);
+            border-bottom: 0.5px solid var(--lbrown);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; height: 60px;
+        }
+
+        .nav-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px; font-weight: 400; letter-spacing: 6px;
+            color: var(--dark); text-decoration: none;
+        }
+
+        .nav-links { display: flex; gap: 32px; list-style: none; }
+        .nav-links a { font-size: 13px; color: var(--muted); text-decoration: none; }
+        .nav-links a:hover { color: var(--dark); }
+
+        .nav-user { display: flex; align-items: center; gap: 10px; }
+
+        .avatar {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: var(--cream); display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 500; color: var(--dark);
+        }
+
+        .nav-username { font-size: 13px; color: var(--dark); }
+
+        .page-layout {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            min-height: calc(100vh - 60px);
+        }
+
+        .sidebar {
+            background: var(--beige);
+            border-right: 0.5px solid var(--lbrown);
+            padding: 32px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-section {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 8px; padding-bottom: 24px;
+            border-bottom: 0.5px solid var(--lbrown); margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 56px; height: 56px; border-radius: 50%;
+            background: var(--cream); display: flex; align-items: center; justify-content: center;
+            font-size: 18px; font-weight: 500; color: var(--dark);
+        }
+
+        .profile-name { font-size: 14px; font-weight: 500; color: var(--dark); }
+        .profile-email { font-size: 12px; color: var(--muted); }
+
+        .menu-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 12px; border-radius: 6px; margin-bottom: 4px;
+            font-size: 13px; color: var(--muted); cursor: pointer;
+            text-decoration: none; transition: all 0.2s;
+        }
+
+        .menu-item:hover { background: var(--lbrown); color: var(--dark); }
+        .menu-item.active { background: var(--lbrown); color: var(--dark); }
+
+        .menu-item svg { flex-shrink: 0; }
+
+        .menu-spacer { flex: 1; }
+
+        .btn-logout {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 12px; border-radius: 6px;
+            font-size: 13px; color: var(--muted); cursor: pointer;
+            text-decoration: none; transition: all 0.2s; background: none; border: none;
+            font-family: 'Jost', sans-serif; width: 100%;
+        }
+
+        .btn-logout:hover { color: var(--dark); }
+
+        .main { padding: 40px 48px; }
+
+        .main-title { font-size: 18px; font-weight: 500; color: var(--dark); margin-bottom: 4px; }
+        .main-sub { font-size: 12px; color: var(--muted); margin-bottom: 24px; }
+
+        .policy-box {
+            background: #F8F3EC;
+            border-left: 3px solid var(--cream);
+            border-radius: 0 8px 8px 0;
+            padding: 14px 18px; margin-bottom: 28px;
+            display: flex; gap: 12px; align-items: flex-start;
+        }
+
+        .policy-box svg { flex-shrink: 0; margin-top: 1px; }
+        .policy-title { font-size: 12px; font-weight: 500; color: #7A5030; margin-bottom: 3px; }
+        .policy-text { font-size: 11px; color: #7A5030; line-height: 1.6; }
+
+        .section-label {
+            font-size: 11px; font-weight: 500; letter-spacing: 2px;
+            color: var(--muted); text-transform: uppercase; margin-bottom: 12px; margin-top: 24px;
+        }
+
+        .section-label:first-of-type { margin-top: 0; }
+
+        .booking-card {
+            background: var(--beige); border-radius: 10px;
+            padding: 18px 20px; margin-bottom: 12px;
+            display: grid; grid-template-columns: 1fr auto;
+            gap: 16px; align-items: start;
+        }
+
+        .booking-card.past { opacity: 0.5; }
+
+        .booking-service { font-size: 14px; font-weight: 500; color: var(--dark); margin-bottom: 4px; }
+        .booking-meta { font-size: 12px; color: var(--muted); margin-bottom: 10px; line-height: 1.7; }
+
+        .badge {
+            display: inline-block; font-size: 10px; font-weight: 500;
+            padding: 3px 10px; border-radius: 10px; margin-bottom: 8px;
+        }
+
+        .badge.free { background: var(--cream); color: var(--dark); }
+        .badge.warn { background: #F0D8C8; color: #7a3a1a; }
+        .badge.done { background: var(--lbrown); color: var(--muted); }
+        .badge.cancelled { background: #f0d8d8; color: #8a3a3a; }
+
+        .booking-actions { display: flex; gap: 8px; margin-top: 8px; }
+
+        .btn-action {
+            font-size: 11px; font-weight: 500; padding: 5px 12px; border-radius: 14px;
+            cursor: pointer; border: 0.5px solid var(--lbrown); background: var(--light);
+            font-family: 'Jost', sans-serif; transition: all 0.2s;
+        }
+
+        .btn-action:hover { border-color: var(--dark); }
+        .btn-action.cancel { color: #8a3a3a; border-color: #e8b4b4; }
+        .btn-action.cancel:hover { background: #f9e8e8; }
+        .btn-action:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .timer-box { text-align: right; }
+        .timer-label { font-size: 11px; color: var(--muted); }
+        .timer-value { font-size: 18px; font-weight: 500; color: var(--dark); }
+        .timer-sub { font-size: 10px; color: var(--muted); }
+        .timer-value.warn { color: #7a3a1a; }
+        .timer-label.warn { color: #7a3a1a; }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(44,44,42,0.4);
+            display: none; align-items: center; justify-content: center; z-index: 200;
+        }
+
+        .modal-overlay.open { display: flex; }
+
+        .modal {
+            background: var(--light); border-radius: 12px;
+            padding: 32px; width: 380px; max-width: 90vw;
+        }
+
+        .modal-title { font-size: 16px; font-weight: 500; color: var(--dark); margin-bottom: 6px; }
+        .modal-sub { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+
+        .modal-warn {
+            background: #F0D8C8; border-radius: 8px;
+            padding: 12px 14px; font-size: 12px; color: #7a3a1a;
+            margin-bottom: 18px; line-height: 1.6;
+            display: flex; gap: 8px; align-items: flex-start;
+        }
+
+        .modal-ok {
+            background: #E8F4E8; border-radius: 8px;
+            padding: 12px 14px; font-size: 12px; color: #3a6a3a;
+            margin-bottom: 18px; line-height: 1.6;
+            display: flex; gap: 8px; align-items: flex-start;
+        }
+
+        .modal-actions { display: flex; gap: 10px; }
+
+        .btn-modal-cancel {
+            flex: 1; background: var(--beige); color: var(--muted); border: none;
+            padding: 11px; border-radius: 20px; font-family: 'Jost', sans-serif;
+            font-size: 12px; cursor: pointer;
+        }
+
+        .btn-modal-confirm {
+            flex: 1; background: #8a3a3a; color: white; border: none;
+            padding: 11px; border-radius: 20px; font-family: 'Jost', sans-serif;
+            font-size: 12px; cursor: pointer;
+        }
+
+        .btn-modal-confirm.safe { background: var(--dark); }
+
+        .loading { font-size: 13px; color: var(--muted); padding: 20px 0; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/" class="nav-logo">SALON</a>
+    <ul class="nav-links">
+        <li><a href="/#services">Services</a></li>
+        <li><a href="/#gallery">Frisører</a></li>
+    </ul>
+    <div class="nav-user">
+        <div class="avatar" id="nav-avatar">?</div>
+        <span class="nav-username" id="nav-username">Indlæser...</span>
+    </div>
+</nav>
+
+<div class="page-layout">
+
+    <div class="sidebar">
+        <div class="profile-section">
+            <div class="profile-avatar" id="profile-avatar">?</div>
+            <div class="profile-name" id="profile-name">—</div>
+            <div class="profile-email" id="profile-email">—</div>
+        </div>
+
+        <a href="/mypage.html" class="menu-item active">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+            </svg>
+            Mine bookinger
+        </a>
+
+        <a href="/booking.html" class="menu-item">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path d="M12 5v14M5 12h14"/>
+            </svg>
+            Book ny tid
+        </a>
+
+        <div class="menu-spacer"></div>
+
+        <form action="/logout" method="POST">
+            <button type="submit" class="btn-logout">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
+                </svg>
+                Log ud
+            </button>
+        </form>
+    </div>
+
+    <div class="main">
+        <div class="main-title">Mine bookinger</div>
+        <div class="main-sub">Kommende og tidligere tider</div>
+
+        <div class="policy-box">
+            <svg width="16" height="16" fill="none" stroke="#7A5030" stroke-width="1.5" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
+            </svg>
+            <div>
+                <div class="policy-title">Aflysningspolitik</div>
+                <div class="policy-text">Aflys eller ændr din tid senest 24 timer før — ellers opkræves fuld pris for behandlingen.</div>
+            </div>
+        </div>
+
+        <div id="upcoming-section">
+            <div class="section-label">Kommende</div>
+            <div id="upcoming-bookings"><p class="loading">Henter bookinger...</p></div>
+        </div>
+
+        <div id="past-section" style="margin-top: 8px;">
+            <div class="section-label">Tidligere</div>
+            <div id="past-bookings"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="cancel-modal">
+    <div class="modal">
+        <div class="modal-title">Aflys booking</div>
+        <div class="modal-sub" id="cancel-modal-sub">—</div>
+        <div id="cancel-warning"></div>
+        <div class="modal-actions">
+            <button class="btn-modal-cancel" onclick="closeModal('cancel-modal')">Fortryd</button>
+            <button class="btn-modal-confirm" id="cancel-confirm-btn" onclick="doCancel()">Aflys</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentCancelId = null;
+    let currentCancelWithin24h = false;
+    let currentCancelPrice = null;
+
+    async function loadUser() {
+        try {
+            const res = await fetch('/api/customers/me');
+            if (res.status === 401 || res.status === 403) {
+                window.location.href = '/login.html';
+                return;
+            }
+            const user = await res.json();
+            const initials = user.username.substring(0, 2).toUpperCase();
+            document.getElementById('nav-avatar').textContent = initials;
+            document.getElementById('nav-username').textContent = user.username;
+            document.getElementById('profile-avatar').textContent = initials;
+            document.getElementById('profile-name').textContent = user.username;
+            document.getElementById('profile-email').textContent = user.email || '';
+        } catch (e) {
+            window.location.href = '/login.html';
+        }
+    }
+
+    async function loadBookings() {
+        try {
+            const res = await fetch('/api/bookings');
+            if (res.status === 401 || res.status === 403) {
+                window.location.href = '/login.html';
+                return;
+            }
+            const bookings = await res.json();
+
+            const now = new Date();
+            const upcoming = bookings.filter(b => b.status === 'CONFIRMED' && new Date(b.slot.startTime) > now);
+            const past = bookings.filter(b => b.status !== 'CONFIRMED' || new Date(b.slot.startTime) <= now);
+
+            renderUpcoming(upcoming);
+            renderPast(past);
+        } catch (e) {
+            document.getElementById('upcoming-bookings').innerHTML = '<p class="loading">Kunne ikke hente bookinger.</p>';
+        }
+    }
+
+    function isWithin24h(startTime) {
+        const start = new Date(startTime);
+        const diff = start - new Date();
+        return diff < 24 * 60 * 60 * 1000;
+    }
+
+    function formatDate(startTime) {
+        const d = new Date(startTime);
+        return d.toLocaleDateString('da-DK', { weekday: 'long', day: 'numeric', month: 'long' });
+    }
+
+    function formatTime(startTime) {
+        const d = new Date(startTime);
+        return d.toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function getTimer(startTime) {
+        const diff = new Date(startTime) - new Date();
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const days = Math.floor(hours / 24);
+        if (days > 0) return `${days}d ${hours % 24}t`;
+        return `${hours}t`;
+    }
+
+    function renderUpcoming(bookings) {
+        const container = document.getElementById('upcoming-bookings');
+        if (bookings.length === 0) {
+            container.innerHTML = '<p class="loading">Ingen kommende bookinger.</p>';
+            return;
+        }
+        container.innerHTML = '';
+        bookings.forEach(b => {
+            const within24h = isWithin24h(b.slot.startTime);
+            const timerVal = getTimer(b.slot.startTime);
+            const card = document.createElement('div');
+            card.className = 'booking-card';
+            card.innerHTML = `
+        <div>
+          <div class="booking-service">${b.slot.service?.name || 'Service'}</div>
+          <div class="booking-meta">
+            ${b.slot.hairdresser?.name || 'Frisør'} · ${formatDate(b.slot.startTime)} · kl. ${formatTime(b.slot.startTime)}<br>
+            ${b.slot.service?.durationMinutes || '—'} min · ${b.totalPrice} kr
+          </div>
+          <div class="badge ${within24h ? 'warn' : 'free'}">
+            ${within24h ? 'Under 24 timer — fuld pris ved aflysning' : 'Kan aflyses gratis'}
+          </div>
+          <div class="booking-actions">
+            <button class="btn-action" ${within24h ? 'disabled' : ''} onclick="openChangeModal(${b.id})">✏ Ændr tid</button>
+            <button class="btn-action cancel" onclick="openCancelModal(${b.id}, ${within24h}, ${b.totalPrice}, '${b.slot.service?.name || ''} · ${formatDate(b.slot.startTime)} · kl. ${formatTime(b.slot.startTime)}')">
+              ✕ Aflys${within24h ? ` (${b.totalPrice} kr)` : ''}
+            </button>
+          </div>
+        </div>
+        <div class="timer-box">
+          <div class="timer-label ${within24h ? 'warn' : ''}">Om</div>
+          <div class="timer-value ${within24h ? 'warn' : ''}">${timerVal}</div>
+          <div class="timer-sub">til timen</div>
+        </div>
+      `;
+            container.appendChild(card);
+        });
+    }
+
+    function renderPast(bookings) {
+        const container = document.getElementById('past-bookings');
+        if (bookings.length === 0) { container.innerHTML = ''; return; }
+        container.innerHTML = '';
+        bookings.forEach(b => {
+            const card = document.createElement('div');
+            card.className = 'booking-card past';
+            const isCancelled = b.status === 'CANCELLED';
+            card.innerHTML = `
+        <div>
+          <div class="booking-service">${b.slot.service?.name || 'Service'}</div>
+          <div class="booking-meta">
+            ${b.slot.hairdresser?.name || 'Frisør'} · ${formatDate(b.slot.startTime)} · kl. ${formatTime(b.slot.startTime)}<br>
+            ${b.slot.service?.durationMinutes || '—'} min · ${b.totalPrice} kr
+          </div>
+          <div class="badge ${isCancelled ? 'cancelled' : 'done'}">${isCancelled ? 'Aflyst' : 'Gennemført'}</div>
+        </div>
+      `;
+            container.appendChild(card);
+        });
+    }
+
+    function openCancelModal(id, within24h, price, description) {
+        currentCancelId = id;
+        currentCancelWithin24h = within24h;
+        currentCancelPrice = price;
+
+        document.getElementById('cancel-modal-sub').textContent = description;
+
+        const warningEl = document.getElementById('cancel-warning');
+        const confirmBtn = document.getElementById('cancel-confirm-btn');
+
+        if (within24h) {
+            warningEl.innerHTML = `
+        <div class="modal-warn">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          Din time er inden for 24 timer. Aflysning medfører fuld betaling på <strong>${price} kr</strong>.
+        </div>`;
+            confirmBtn.textContent = `Aflys og betal ${price} kr`;
+            confirmBtn.className = 'btn-modal-confirm';
+        } else {
+            warningEl.innerHTML = `
+        <div class="modal-ok">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px">
+            <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+          Din aflysning er gratis — du aflyser mere end 24 timer før din tid.
+        </div>`;
+            confirmBtn.textContent = 'Aflys gratis';
+            confirmBtn.className = 'btn-modal-confirm safe';
+        }
+
+        document.getElementById('cancel-modal').classList.add('open');
+    }
+
+    function openChangeModal(id) {
+        window.location.href = `/booking.html?changeBookingId=${id}`;
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('open');
+    }
+
+    async function doCancel() {
+        if (!currentCancelId) return;
+        try {
+            const res = await fetch(`/api/bookings/${currentCancelId}`, { method: 'DELETE' });
+            if (res.ok) {
+                closeModal('cancel-modal');
+                loadBookings();
+            } else {
+                alert('Noget gik galt. Prøv igen.');
+            }
+        } catch (e) {
+            alert('Kunne ikke oprette forbindelse til serveren.');
+        }
+    }
+
+    document.getElementById('cancel-modal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal('cancel-modal');
+    });
+
+    loadUser();
+    loadBookings();
+</script>
+
+</body>
+</html>

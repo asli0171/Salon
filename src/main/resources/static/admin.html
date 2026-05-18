@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salon — Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #C8A97E;
+            --beige: #EDE8DF;
+            --light: #F5F0E8;
+            --dark: #2C2C2A;
+            --muted: #8A7F6E;
+            --lbrown: #D4C9B8;
+            --dbrown: #B8956A;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--light);
+            color: var(--dark);
+            font-family: 'Jost', sans-serif;
+            font-weight: 300;
+            min-height: 100vh;
+        }
+
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: var(--beige);
+            border-right: 0.5px solid var(--lbrown);
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-logo {
+            font-family: 'Jost', sans-serif;
+            font-size: 14px; font-weight: 500; letter-spacing: 4px;
+            color: var(--dark); margin-bottom: 28px; padding: 0 4px;
+            text-decoration: none; display: block;
+        }
+
+        .menu-item {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 10px; border-radius: 6px; margin-bottom: 4px;
+            font-size: 12px; color: var(--muted); cursor: pointer;
+            text-decoration: none; transition: all 0.2s; border: none;
+            background: none; font-family: 'Jost', sans-serif; width: 100%;
+            text-align: left;
+        }
+
+        .menu-item:hover { background: var(--lbrown); color: var(--dark); }
+        .menu-item.active { background: var(--lbrown); color: var(--dark); }
+
+        .menu-spacer { flex: 1; }
+
+        .btn-logout {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 10px; border-radius: 6px;
+            font-size: 12px; color: var(--muted); cursor: pointer;
+            background: none; border: none; font-family: 'Jost', sans-serif;
+            width: 100%; transition: all 0.2s; text-align: left;
+        }
+
+        .btn-logout:hover { color: var(--dark); }
+
+        .main { padding: 28px 36px; }
+
+        .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+
+        .stat-card { padding: 16px 20px; }
+
+        .stat-num { font-size: 28px; font-weight: 400; color: var(--dark); }
+        .stat-label { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+        .section-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .section-title { font-size: 15px; font-weight: 500; color: var(--dark); }
+
+        .btn-add {
+            background: var(--cream); color: var(--dark); border: none;
+            padding: 8px 18px; font-family: 'Jost', sans-serif; font-size: 11px;
+            font-weight: 500; cursor: pointer; border-radius: 20px;
+            letter-spacing: 0.5px; transition: background 0.2s;
+        }
+
+        .btn-add:hover { background: var(--dbrown); }
+
+        .table-wrap {
+            background: white; border-radius: 8px;
+            overflow: hidden; border: 0.5px solid var(--lbrown);
+            margin-bottom: 28px;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+
+        th {
+            font-size: 11px; font-weight: 500; color: var(--dark);
+            text-align: left; padding: 10px 16px;
+            border-bottom: 0.5px solid var(--lbrown);
+            background: var(--cream);
+        }
+
+        td {
+            font-size: 12px; color: var(--dark);
+            padding: 11px 16px;
+            border-bottom: 0.5px solid var(--beige);
+        }
+
+        tr:last-child td { border-bottom: none; }
+
+        .badge {
+            display: inline-block; font-size: 10px; font-weight: 400;
+            padding: 3px 12px; border-radius: 14px;
+        }
+
+        .badge.confirmed { background: var(--cream); color: var(--dark); }
+        .badge.cancelled { background: var(--lbrown); color: var(--muted); }
+        .badge.available { background: #d8ead8; color: #3a6a3a; }
+        .badge.taken { background: var(--lbrown); color: var(--muted); }
+
+        .btn-table {
+            font-size: 11px; color: var(--muted); background: none; border: none;
+            cursor: pointer; padding: 2px 8px; border-radius: 4px;
+            font-family: 'Jost', sans-serif;
+        }
+
+        .btn-table:hover { color: var(--dark); }
+        .btn-table.delete:hover { color: #8a3a3a; }
+
+        .panel { display: none; }
+        .panel.active { display: block; }
+
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(44,44,42,0.35);
+            display: none; align-items: center; justify-content: center; z-index: 200;
+        }
+
+        .modal-overlay.open { display: flex; }
+
+        .modal {
+            background: var(--light); border-radius: 12px;
+            padding: 32px; width: 420px; max-width: 90vw;
+        }
+
+        .modal-title { font-size: 16px; font-weight: 500; color: var(--dark); margin-bottom: 20px; }
+
+        .form-group { margin-bottom: 16px; }
+
+        label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 5px; }
+
+        input, select {
+            width: 100%; background: var(--beige); border: 0.5px solid var(--lbrown);
+            border-radius: 8px; padding: 10px 14px; font-family: 'Jost', sans-serif;
+            font-size: 13px; color: var(--dark); outline: none;
+        }
+
+        input:focus, select:focus { border-color: var(--cream); }
+
+        .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+
+        .btn-modal-cancel {
+            flex: 1; background: var(--beige); color: var(--muted); border: none;
+            padding: 11px; border-radius: 20px; font-family: 'Jost', sans-serif;
+            font-size: 12px; cursor: pointer;
+        }
+
+        .btn-modal-save {
+            flex: 1; background: var(--dark); color: var(--light); border: none;
+            padding: 11px; border-radius: 20px; font-family: 'Jost', sans-serif;
+            font-size: 12px; cursor: pointer;
+        }
+
+        .btn-modal-save:hover { background: #444441; }
+
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        .loading { font-size: 12px; color: var(--muted); padding: 16px 0; }
+    </style>
+</head>
+<body>
+
+<div class="admin-layout">
+
+    <div class="sidebar">
+        <a href="/" class="sidebar-logo">SALON</a>
+
+        <button class="menu-item active" id="menu-bookings" onclick="showPanel('bookings')">
+            Bookinger
+        </button>
+        <button class="menu-item" id="menu-services" onclick="showPanel('services')">
+            Services
+        </button>
+        <button class="menu-item" id="menu-hairdressers" onclick="showPanel('hairdressers')">
+            Frisører
+        </button>
+        <button class="menu-item" id="menu-slots" onclick="showPanel('slots')">
+            Tider
+        </button>
+
+        <div class="menu-spacer"></div>
+
+        <form action="/logout" method="POST">
+            <button type="submit" class="btn-logout">← Log ud</button>
+        </form>
+    </div>
+
+    <div class="main">
+
+        <div class="panel active" id="panel-bookings">
+            <div class="stat-row">
+                <div class="stat-card">
+                    <div class="stat-num" id="stat-bookings">—</div>
+                    <div class="stat-label">Bookinger i dag</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" id="stat-tider">—</div>
+                    <div class="stat-label">Ledige tider</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" id="stat-revenue">—</div>
+                    <div class="stat-label">Omsætning i dag</div>
+                </div>
+            </div>
+
+            <div class="section-header">
+                <div class="section-title" id="bookings-date-title">Bookinger</div>
+                <button class="btn-add" onclick="showPanel('slots'); openSlotModal()">+ Opret tid</button>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Tid</th>
+                        <th>Kunde</th>
+                        <th>Service</th>
+                        <th>Frisør</th>
+                        <th>Pris</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody id="bookings-tbody">
+                    <tr><td colspan="7" class="loading">Henter bookinger...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="panel" id="panel-services">
+            <div class="section-header">
+                <div class="section-title">Services</div>
+                <button class="btn-add" onclick="openServiceModal()">+ Tilføj service</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr><th>Navn</th><th>Varighed</th><th>Basispris</th><th></th></tr>
+                    </thead>
+                    <tbody id="services-tbody">
+                    <tr><td colspan="4" class="loading">Henter services...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="panel" id="panel-hairdressers">
+            <div class="section-header">
+                <div class="section-title">Frisører</div>
+                <button class="btn-add" onclick="openHairdresserModal()">+ Tilføj frisør</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr><th>Navn</th><th>Bio</th><th>Status</th><th></th></tr>
+                    </thead>
+                    <tbody id="hairdressers-tbody">
+                    <tr><td colspan="4" class="loading">Henter frisører...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="panel" id="panel-slots">
+            <div class="section-header">
+                <div class="section-title">Tider</div>
+                <button class="btn-add" onclick="openSlotModal()">+ Opret tid</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr><th>Dato</th><th>Tid</th><th>Frisør</th><th>Service</th><th>Status</th><th></th></tr>
+                    </thead>
+                    <tbody id="slots-tbody">
+                    <tr><td colspan="6" class="loading">Henter tider...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal-overlay" id="slot-modal">
+    <div class="modal">
+        <div class="modal-title">Opret ny tid</div>
+        <div class="form-group"><label>Frisør</label><select id="slot-hairdresser"></select></div>
+        <div class="form-group"><label>Service</label><select id="slot-service"></select></div>
+        <div class="form-row">
+            <div class="form-group"><label>Start</label><input type="datetime-local" id="slot-start"></div>
+            <div class="form-group"><label>Slut</label><input type="datetime-local" id="slot-end"></div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-modal-cancel" onclick="closeModal('slot-modal')">Annuller</button>
+            <button class="btn-modal-save" onclick="saveSlot()">Gem tid</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="hairdresser-modal">
+    <div class="modal">
+        <div class="modal-title">Tilføj frisør</div>
+        <div class="form-group"><label>Navn</label><input type="text" id="hd-name" placeholder="Frisørens navn"></div>
+        <div class="form-group"><label>Bio</label><input type="text" id="hd-bio" placeholder="Kort beskrivelse"></div>
+        <div class="modal-actions">
+            <button class="btn-modal-cancel" onclick="closeModal('hairdresser-modal')">Annuller</button>
+            <button class="btn-modal-save" onclick="saveHairdresser()">Gem frisør</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="service-modal">
+    <div class="modal">
+        <div class="modal-title">Tilføj service</div>
+        <div class="form-group"><label>Navn</label><input type="text" id="svc-name" placeholder="f.eks. Klip"></div>
+        <div class="form-group"><label>Beskrivelse</label><input type="text" id="svc-desc" placeholder="Kort beskrivelse"></div>
+        <div class="form-row">
+            <div class="form-group"><label>Varighed (min)</label><input type="number" id="svc-duration" placeholder="45"></div>
+            <div class="form-group"><label>Basispris (kr)</label><input type="number" id="svc-price" placeholder="350"></div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn-modal-cancel" onclick="closeModal('service-modal')">Annuller</button>
+            <button class="btn-modal-save" onclick="saveService()">Gem service</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showPanel(name) {
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+        document.getElementById(`panel-${name}`).classList.add('active');
+        document.getElementById(`menu-${name}`).classList.add('active');
+        if (name === 'bookings') loadBookings();
+        if (name === 'slots') loadSlots();
+        if (name === 'hairdressers') loadHairdressers();
+        if (name === 'services') loadServices();
+    }
+
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    function formatDate(dt) {
+        return new Date(dt).toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    function formatTime(dt) {
+        return new Date(dt).toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function isToday(dt) {
+        const d = new Date(dt), n = new Date();
+        return d.getDate() === n.getDate() && d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear();
+    }
+
+    async function loadBookings() {
+        try {
+            const res = await fetch('/api/bookings');
+            const bookings = await res.json();
+            const tbody = document.getElementById('bookings-tbody');
+
+            const todayBookings = bookings.filter(b => b.slot?.startTime && isToday(b.slot.startTime) && b.status === 'CONFIRMED');
+            const todayRevenue = todayBookings.reduce((s, b) => s + (b.totalPrice || 0), 0);
+
+            document.getElementById('stat-bookings').textContent = todayBookings.length;
+            document.getElementById('stat-revenue').textContent = todayRevenue.toLocaleString('da-DK') + ' kr';
+
+            const today = new Date();
+            document.getElementById('bookings-date-title').textContent =
+                'Bookinger — ' + today.toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' });
+
+            tbody.innerHTML = '';
+            if (!bookings.length) {
+                tbody.innerHTML = '<tr><td colspan="7" class="loading">Ingen bookinger endnu.</td></tr>';
+                return;
+            }
+
+            bookings.sort((a, b) => new Date(a.slot?.startTime) - new Date(b.slot?.startTime));
+            bookings.forEach(b => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+          <td>${b.slot ? formatTime(b.slot.startTime) : '—'}</td>
+          <td>${b.customer?.username || '—'}</td>
+          <td>${b.slot?.service?.name || '—'}</td>
+          <td>${b.slot?.hairdresser?.name || '—'}</td>
+          <td>${b.totalPrice ? b.totalPrice + ' kr' : '—'}</td>
+          <td><span class="badge ${b.status === 'CONFIRMED' ? 'confirmed' : 'cancelled'}">${b.status === 'CONFIRMED' ? 'Bekræftet' : 'Annulleret'}</span></td>
+          <td><button class="btn-table delete" onclick="deleteBooking(${b.id})">Slet</button></td>
+        `;
+                tbody.appendChild(tr);
+            });
+        } catch (e) {
+            document.getElementById('bookings-tbody').innerHTML = '<tr><td colspan="7" class="loading">Kunne ikke hente bookinger.</td></tr>';
+        }
+    }
+
+    async function loadSlots() {
+        try {
+            const res = await fetch('/api/slots');
+            const slots = await res.json();
+            const tbody = document.getElementById('slots-tbody');
+            const available = slots.filter(s => s.isAvailable).length;
+            document.getElementById('stat-tider').textContent = available;
+            tbody.innerHTML = '';
+            if (!slots.length) { tbody.innerHTML = '<tr><td colspan="6" class="loading">Ingen tider endnu.</td></tr>'; return; }
+            slots.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+            slots.forEach(s => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+          <td>${formatDate(s.startTime)}</td>
+          <td>${formatTime(s.startTime)} – ${formatTime(s.endTime)}</td>
+          <td>${s.hairdresser?.name || '—'}</td>
+          <td>${s.service?.name || '—'}</td>
+          <td><span class="badge ${s.isAvailable ? 'available' : 'taken'}">${s.isAvailable ? 'Ledigt' : 'Booket'}</span></td>
+          <td><button class="btn-table delete" onclick="deleteSlot(${s.id})">Slet</button></td>
+        `;
+                tbody.appendChild(tr);
+            });
+        } catch (e) {
+            document.getElementById('slots-tbody').innerHTML = '<tr><td colspan="6" class="loading">Kunne ikke hente slots.</td></tr>';
+        }
+    }
+
+    async function loadHairdressers() {
+        try {
+            const res = await fetch('/api/hairdressers');
+            const list = await res.json();
+            const tbody = document.getElementById('hairdressers-tbody');
+            tbody.innerHTML = '';
+            if (!list.length) { tbody.innerHTML = '<tr><td colspan="4" class="loading">Ingen frisører endnu.</td></tr>'; return; }
+            list.forEach(h => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+          <td>${h.name}</td>
+          <td>${h.bio || '—'}</td>
+          <td><span class="badge ${h.active ? 'available' : 'cancelled'}">${h.active ? 'Aktiv' : 'Inaktiv'}</span></td>
+          <td>
+            <button class="btn-table" onclick="toggleHairdresser(${h.id}, ${h.active})">${h.active ? 'Deaktiver' : 'Aktiver'}</button>
+            <button class="btn-table delete" onclick="deleteHairdresser(${h.id})">Slet</button>
+          </td>
+        `;
+                tbody.appendChild(tr);
+            });
+        } catch (e) {
+            document.getElementById('hairdressers-tbody').innerHTML = '<tr><td colspan="4" class="loading">Kunne ikke hente frisører.</td></tr>';
+        }
+    }
+
+    async function loadServices() {
+        try {
+            const res = await fetch('/api/services');
+            const list = await res.json();
+            const tbody = document.getElementById('services-tbody');
+            tbody.innerHTML = '';
+            if (!list.length) { tbody.innerHTML = '<tr><td colspan="4" class="loading">Ingen services endnu.</td></tr>'; return; }
+            list.forEach(s => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+          <td>${s.name}</td>
+          <td>${s.durationMinutes} min</td>
+          <td>${s.basePrice} kr</td>
+          <td><button class="btn-table delete" onclick="deleteService(${s.id})">Slet</button></td>
+        `;
+                tbody.appendChild(tr);
+            });
+        } catch (e) {
+            document.getElementById('services-tbody').innerHTML = '<tr><td colspan="4" class="loading">Kunne ikke hente services.</td></tr>';
+        }
+    }
+
+    async function openSlotModal() {
+        const [hdRes, svcRes] = await Promise.all([fetch('/api/hairdressers'), fetch('/api/services')]);
+        const hairdressers = await hdRes.json();
+        const services = await svcRes.json();
+        document.getElementById('slot-hairdresser').innerHTML = hairdressers.map(h => `<option value="${h.id}">${h.name}</option>`).join('');
+        document.getElementById('slot-service').innerHTML = services.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+        document.getElementById('slot-modal').classList.add('open');
+    }
+
+    async function saveSlot() {
+        const body = {
+            hairdresser: { id: parseInt(document.getElementById('slot-hairdresser').value) },
+            service: { id: parseInt(document.getElementById('slot-service').value) },
+            startTime: document.getElementById('slot-start').value,
+            endTime: document.getElementById('slot-end').value,
+            isAvailable: true
+        };
+        const res = await fetch('/api/slots', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        if (res.ok) { closeModal('slot-modal'); loadSlots(); } else alert('Fejl ved oprettelse af tid.');
+    }
+
+    async function deleteSlot(id) {
+        if (!confirm('Slet denne tid?')) return;
+        await fetch(`/api/slots/${id}`, { method: 'DELETE' });
+        loadSlots();
+    }
+
+    function openHairdresserModal() {
+        document.getElementById('hd-name').value = '';
+        document.getElementById('hd-bio').value = '';
+        document.getElementById('hairdresser-modal').classList.add('open');
+    }
+
+    async function saveHairdresser() {
+        const body = { name: document.getElementById('hd-name').value, bio: document.getElementById('hd-bio').value, active: true };
+        const res = await fetch('/api/hairdressers/admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        if (res.ok) { closeModal('hairdresser-modal'); loadHairdressers(); } else alert('Fejl ved oprettelse af frisør.');
+    }
+
+    async function toggleHairdresser(id, active) {
+        await fetch(`/api/hairdressers/admin/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ active: !active }) });
+        loadHairdressers();
+    }
+
+    async function deleteHairdresser(id) {
+        if (!confirm('Slet denne frisør?')) return;
+        await fetch(`/api/hairdressers/admin/${id}`, { method: 'DELETE' });
+        loadHairdressers();
+    }
+
+    function openServiceModal() {
+        document.getElementById('svc-name').value = '';
+        document.getElementById('svc-desc').value = '';
+        document.getElementById('svc-duration').value = '';
+        document.getElementById('svc-price').value = '';
+        document.getElementById('service-modal').classList.add('open');
+    }
+
+    async function saveService() {
+        const body = {
+            name: document.getElementById('svc-name').value,
+            description: document.getElementById('svc-desc').value,
+            durationMinutes: parseInt(document.getElementById('svc-duration').value),
+            basePrice: parseFloat(document.getElementById('svc-price').value)
+        };
+        const res = await fetch('/api/services', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        if (res.ok) { closeModal('service-modal'); loadServices(); } else alert('Fejl ved oprettelse af service.');
+    }
+
+    async function deleteService(id) {
+        if (!confirm('Slet denne service?')) return;
+        await fetch(`/api/services/${id}`, { method: 'DELETE' });
+        loadServices();
+    }
+
+    async function deleteBooking(id) {
+        if (!confirm('Slet denne booking?')) return;
+        await fetch(`/api/bookings/${id}`, { method: 'DELETE' });
+        loadBookings();
+    }
+
+    document.querySelectorAll('.modal-overlay').forEach(o => {
+        o.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('open'); });
+    });
+
+    loadBookings();
+</script>
+
+</body>
+</html>

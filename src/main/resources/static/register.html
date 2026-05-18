@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salon — Opret konto</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #C8A97E;
+            --beige: #EDE8DF;
+            --light: #F5F0E8;
+            --dark: #2C2C2A;
+            --muted: #8A7F6E;
+            --lbrown: #D4C9B8;
+            --dbrown: #B8956A;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--light);
+            color: var(--dark);
+            font-family: 'Jost', sans-serif;
+            font-weight: 300;
+            min-height: 100vh;
+        }
+
+        nav {
+            background: var(--beige);
+            border-bottom: 0.5px solid var(--lbrown);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            height: 60px;
+        }
+
+        .nav-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px; font-weight: 400; letter-spacing: 6px;
+            color: var(--dark); text-decoration: none;
+        }
+
+        .nav-links { display: flex; gap: 32px; list-style: none; }
+        .nav-links a { font-size: 13px; color: var(--muted); text-decoration: none; letter-spacing: 1px; }
+        .nav-links a:hover { color: var(--dark); }
+
+        .btn-dark {
+            background: var(--dark); color: var(--light); border: none;
+            padding: 8px 20px; font-family: 'Jost', sans-serif; font-size: 12px;
+            letter-spacing: 1.5px; cursor: pointer; border-radius: 20px;
+            text-decoration: none; display: inline-block;
+        }
+        .btn-dark:hover { background: #444441; }
+
+        .register-wrap {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: calc(100vh - 60px);
+        }
+
+        .register-img {
+            background: var(--cream);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: #4A3520;
+            font-size: 13px;
+            letter-spacing: 1px;
+        }
+
+        .register-form {
+            padding: 60px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .register-eyebrow {
+            font-size: 11px; letter-spacing: 3px; color: var(--muted);
+            text-transform: uppercase; margin-bottom: 10px;
+        }
+
+        .register-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 42px; font-weight: 300; color: var(--dark);
+            line-height: 1.2; margin-bottom: 36px;
+        }
+
+        .form-group { margin-bottom: 18px; }
+
+        label {
+            display: block; font-size: 12px; color: var(--muted);
+            letter-spacing: 1px; margin-bottom: 6px;
+        }
+
+        input {
+            width: 100%;
+            background: var(--beige);
+            border: 0.5px solid var(--lbrown);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-family: 'Jost', sans-serif;
+            font-size: 14px;
+            color: var(--dark);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus { border-color: var(--cream); }
+        input::placeholder { color: var(--lbrown); }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--dark);
+            color: var(--light);
+            border: none;
+            padding: 14px;
+            font-family: 'Jost', sans-serif;
+            font-size: 13px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-top: 8px;
+            transition: background 0.2s;
+        }
+
+        .btn-submit:hover { background: #444441; }
+
+        .register-footer {
+            margin-top: 24px;
+            font-size: 13px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .register-footer a { color: var(--dark); font-weight: 500; text-decoration: none; }
+        .register-footer a:hover { color: var(--cream); }
+
+        .msg {
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .msg.error { background: #f9e8e8; border: 0.5px solid #e8b4b4; color: #8a3a3a; }
+        .msg.success { background: #e8f4e8; border: 0.5px solid #b4d4b4; color: #3a6a3a; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/" class="nav-logo">SALON</a>
+    <ul class="nav-links">
+        <li><a href="/#services">Services</a></li>
+        <li><a href="/#gallery">Frisører</a></li>
+        <li><a href="/#contact">Om os</a></li>
+    </ul>
+    <a href="/booking.html" class="btn-dark">Book tid</a>
+</nav>
+
+<div class="register-wrap">
+
+    <div class="register-img">
+        <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <path d="M21 15l-5-5L5 21"/>
+        </svg>
+        <span>Salonbillede</span>
+    </div>
+
+    <div class="register-form">
+        <div class="register-eyebrow">Bliv kunde</div>
+        <h1 class="register-title">Opret din<br>konto</h1>
+
+        <div class="msg error" id="error-msg"></div>
+        <div class="msg success" id="success-msg"></div>
+
+        <div id="form-container">
+            <div class="form-group">
+                <label for="username">Brugernavn</label>
+                <input type="text" id="username" placeholder="vælg et brugernavn" required autocomplete="username">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" placeholder="din@email.dk" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Telefon</label>
+                    <input type="tel" id="phone" placeholder="+45 12 34 56 78">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password">Adgangskode</label>
+                <input type="password" id="password" placeholder="mindst 6 tegn" required autocomplete="new-password">
+            </div>
+            <div class="form-group">
+                <label for="password2">Gentag adgangskode</label>
+                <input type="password" id="password2" placeholder="••••••••" required autocomplete="new-password">
+            </div>
+            <button class="btn-submit" onclick="register()">OPRET KONTO</button>
+        </div>
+
+        <div class="register-footer">
+            Har du allerede en konto? <a href="/login.html">Log ind her</a>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    async function register() {
+        const username = document.getElementById('username').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const password = document.getElementById('password').value;
+        const password2 = document.getElementById('password2').value;
+
+        const errorMsg = document.getElementById('error-msg');
+        const successMsg = document.getElementById('success-msg');
+        errorMsg.style.display = 'none';
+        successMsg.style.display = 'none';
+
+        if (!username || !email || !password) {
+            errorMsg.textContent = 'Udfyld venligst alle påkrævede felter.';
+            errorMsg.style.display = 'block';
+            return;
+        }
+
+        if (password !== password2) {
+            errorMsg.textContent = 'Adgangskoderne matcher ikke.';
+            errorMsg.style.display = 'block';
+            return;
+        }
+
+        if (password.length < 6) {
+            errorMsg.textContent = 'Adgangskoden skal være mindst 6 tegn.';
+            errorMsg.style.display = 'block';
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/customers/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, email, phone, password })
+            });
+
+            if (res.ok) {
+                successMsg.textContent = 'Konto oprettet! Du sendes videre til login...';
+                successMsg.style.display = 'block';
+                document.getElementById('form-container').style.opacity = '0.4';
+                document.getElementById('form-container').style.pointerEvents = 'none';
+                setTimeout(() => window.location.href = '/login.html', 2000);
+            } else {
+                const text = await res.text();
+                errorMsg.textContent = text || 'Noget gik galt. Prøv igen.';
+                errorMsg.style.display = 'block';
+            }
+        } catch (e) {
+            errorMsg.textContent = 'Kunne ikke oprette forbindelse til serveren.';
+            errorMsg.style.display = 'block';
+        }
+    }
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Enter') register();
+    });
+</script>
+
+</body>
+</html>

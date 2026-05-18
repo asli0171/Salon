@@ -112,3 +112,29 @@ Projektet har en GitHub Actions pipeline der automatisk:
 4. Deployer til serveren via SSH
 
 Pipeline konfigurationen findes i `.github/workflows/ci.yml`.
+
+## Wireframes
+
+### Forside
+
+![img.png](img.png)
+
+### Bookingside
+
+![img_1.png](img_1.png)
+
+### Adminpanel
+
+![img_2.png](img_2.png)
+
+### Login
+
+![img_3.png](img_3.png)
+
+### Min side
+
+![img_4.png](img_4.png)
+
+### Aflysningsmodal
+
+![img_5.png](img_5.png)

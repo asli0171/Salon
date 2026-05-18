@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salon — Booking bekræftet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #C8A97E;
+            --beige: #EDE8DF;
+            --light: #F5F0E8;
+            --dark: #2C2C2A;
+            --muted: #8A7F6E;
+            --lbrown: #D4C9B8;
+            --dbrown: #B8956A;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--light);
+            color: var(--dark);
+            font-family: 'Jost', sans-serif;
+            font-weight: 300;
+            min-height: 100vh;
+        }
+
+        nav {
+            background: var(--beige);
+            border-bottom: 0.5px solid var(--lbrown);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; height: 60px;
+        }
+
+        .nav-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px; font-weight: 400; letter-spacing: 6px;
+            color: var(--dark); text-decoration: none;
+        }
+
+        .nav-links { display: flex; gap: 32px; list-style: none; }
+        .nav-links a { font-size: 13px; color: var(--muted); text-decoration: none; }
+        .nav-links a:hover { color: var(--dark); }
+
+        .btn-dark {
+            background: var(--dark); color: var(--light); border: none;
+            padding: 8px 20px; font-family: 'Jost', sans-serif; font-size: 12px;
+            letter-spacing: 1.5px; cursor: pointer; border-radius: 20px;
+            text-decoration: none; display: inline-block;
+        }
+        .btn-dark:hover { background: #444441; }
+
+        .confirm-wrap {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: calc(100vh - 60px);
+        }
+
+        .confirm-left {
+            padding: 80px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .check-circle {
+            width: 56px; height: 56px; border-radius: 50%;
+            background: var(--cream);
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 28px;
+        }
+
+        .confirm-eyebrow {
+            font-size: 11px; letter-spacing: 3px; color: var(--muted);
+            text-transform: uppercase; margin-bottom: 10px;
+        }
+
+        .confirm-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 48px; font-weight: 300; color: var(--dark);
+            line-height: 1.15; margin-bottom: 16px;
+        }
+
+        .confirm-sub {
+            font-size: 14px; color: var(--muted); line-height: 1.7;
+            margin-bottom: 40px; max-width: 380px;
+        }
+
+        .confirm-actions { display: flex; gap: 12px; }
+
+        .btn-ghost {
+            background: transparent; color: var(--muted);
+            border: 0.5px solid var(--lbrown); padding: 10px 24px;
+            font-family: 'Jost', sans-serif; font-size: 12px; letter-spacing: 1.5px;
+            cursor: pointer; border-radius: 20px; text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-ghost:hover { border-color: var(--dark); color: var(--dark); }
+
+        .confirm-right {
+            background: var(--beige);
+            border-left: 0.5px solid var(--lbrown);
+            padding: 80px 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .summary-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 28px; font-weight: 400; color: var(--dark);
+            margin-bottom: 28px;
+        }
+
+        .summary-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 14px 0; border-bottom: 0.5px solid var(--lbrown);
+            font-size: 13px;
+        }
+
+        .summary-row:last-of-type { border-bottom: none; }
+
+        .summary-label { color: var(--muted); }
+        .summary-value { color: var(--dark); font-weight: 500; }
+
+        .summary-total {
+            display: flex; justify-content: space-between;
+            font-size: 16px; font-weight: 500; color: var(--dark);
+            padding-top: 20px; margin-top: 8px;
+            border-top: 1px solid var(--lbrown);
+        }
+
+        .warning-box {
+            background: #F0E8D8;
+            border-left: 3px solid var(--cream);
+            border-radius: 0 6px 6px 0;
+            padding: 14px 16px;
+            font-size: 12px; color: #7A5030;
+            margin-top: 24px; line-height: 1.6;
+        }
+
+        .confirm-left, .confirm-right {
+            animation: fadeUp 0.5s ease forwards;
+        }
+
+        .confirm-right { animation-delay: 0.1s; opacity: 0; }
+        .confirm-left { animation-delay: 0s; opacity: 0; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/" class="nav-logo">SALON</a>
+    <ul class="nav-links">
+        <li><a href="/#services">Services</a></li>
+        <li><a href="/#gallery">Frisører</a></li>
+        <li><a href="/#contact">Om os</a></li>
+    </ul>
+    <a href="/mypage.html" class="btn-dark">Mine bookinger</a>
+</nav>
+
+<div class="confirm-wrap">
+
+    <div class="confirm-left">
+        <div class="check-circle">
+            <svg width="24" height="24" fill="none" stroke="#2C2C2A" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <div class="confirm-eyebrow">Booking bekræftet</div>
+        <h1 class="confirm-title">Vi glæder os<br>til at se dig!</h1>
+        <p class="confirm-sub">Din booking er registreret. Husk at aflyse eller ændre senest 24 timer før din tid — ellers opkræves fuld pris.</p>
+        <div class="confirm-actions">
+            <a href="/mypage.html" class="btn-dark">Se mine bookinger</a>
+            <a href="/" class="btn-ghost">Tilbage til forsiden</a>
+        </div>
+    </div>
+
+    <div class="confirm-right">
+        <div class="summary-title">Din booking</div>
+
+        <div class="summary-row">
+            <span class="summary-label">Service</span>
+            <span class="summary-value" id="conf-service">—</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">Frisør</span>
+            <span class="summary-value" id="conf-hairdresser">—</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">Dato</span>
+            <span class="summary-value" id="conf-date">—</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">Tid</span>
+            <span class="summary-value" id="conf-time">—</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">Varighed</span>
+            <span class="summary-value" id="conf-duration">—</span>
+        </div>
+        <div class="summary-total">
+            <span>Total</span>
+            <span id="conf-price">—</span>
+        </div>
+
+        <div class="warning-box">
+            Aflysning eller ændring skal ske senest <strong>24 timer før</strong> din booking — ellers opkræves fuld pris for behandlingen.
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const booking = JSON.parse(sessionStorage.getItem('lastBooking') || '{}');
+
+    if (booking.service) document.getElementById('conf-service').textContent = booking.service;
+    if (booking.hairdresser) document.getElementById('conf-hairdresser').textContent = booking.hairdresser;
+    if (booking.date) document.getElementById('conf-date').textContent = booking.date;
+    if (booking.time) document.getElementById('conf-time').textContent = booking.time;
+    if (booking.duration) document.getElementById('conf-duration').textContent = booking.duration;
+    if (booking.price) document.getElementById('conf-price').textContent = booking.price;
+</script>
+
+</body>
+</html>
