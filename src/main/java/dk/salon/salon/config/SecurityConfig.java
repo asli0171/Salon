@@ -2,6 +2,7 @@ package dk.salon.salon.config;
 
 import dk.salon.salon.service.AdminDetailsService;
 import dk.salon.salon.service.CustomerDetailsService;
+import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,7 +21,7 @@ public class SecurityConfig {
     private final CustomerDetailsService customerDetailsService;
 
     public SecurityConfig(AdminDetailsService adminDetailsService,
-        CustomerDetailsService customerDetailsService) {
+                          CustomerDetailsService customerDetailsService) {
         this.adminDetailsService = adminDetailsService;
         this.customerDetailsService = customerDetailsService;
     }
@@ -51,7 +52,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/index.html", "/booking.html",
                                 "/login.html", "/confirm.html", "/register.html",
-                                "/mypage.html").permitAll()
+                                "/mypage.html", "/om.html").permitAll()
                         .requestMatchers("/**.css", "/**.js").permitAll()
                         .requestMatchers("/api/hairdressers").permitAll()
                         .requestMatchers("/api/hairdressers/{id}").permitAll()
@@ -77,8 +78,21 @@ public class SecurityConfig {
                             response.sendRedirect(isAdmin ? "/admin.html" : "/");
                         })
                 )
-                .logout(logout -> logout.logoutSuccessUrl("/login.html"));
+                .logout(logout -> logout.logoutSuccessUrl("/login.html"))
+                .sessionManagement(session -> session
+                        .maximumSessions(1)
+                        .maxSessionsPreventsLogin(false)
+                );
 
         return http.build();
+    }
+
+    @Bean
+    public ServletContextInitializer sessionConfig() {
+        return servletContext -> {
+            servletContext.getSessionCookieConfig().setHttpOnly(true);
+            servletContext.getSessionCookieConfig().setMaxAge(3600); // 1 time
+            servletContext.getSessionCookieConfig().setName("SALON_SESSION");
+        };
     }
 }

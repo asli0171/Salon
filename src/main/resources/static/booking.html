@@ -225,6 +225,27 @@
         }
     </style>
 </head>
+<div id="cookie-banner" style="display:none; position:fixed; bottom:0; left:0; right:0; background:var(--dark); color:var(--light); padding:16px 40px; display:flex; align-items:center; justify-content:space-between; z-index:999; font-size:12px; letter-spacing:0.5px;">
+    <span>Vi bruger cookies til sessionshåndtering og for at huske dit login. <a href="/om.html" style="color:var(--cream); text-decoration:none;">Læs mere</a></span>
+    <div style="display:flex; gap:10px;">
+        <button onclick="acceptCookies()" style="background:var(--cream); color:var(--dark); border:none; padding:8px 20px; border-radius:20px; font-family:'Jost',sans-serif; font-size:11px; cursor:pointer;">Accepter</button>
+        <button onclick="declineCookies()" style="background:transparent; color:var(--muted); border:0.5px solid var(--muted); padding:8px 20px; border-radius:20px; font-family:'Jost',sans-serif; font-size:11px; cursor:pointer;">Afvis</button>
+    </div>
+</div>
+
+<script>
+    if (!localStorage.getItem('cookieConsent')) {
+        document.getElementById('cookie-banner').style.display = 'flex';
+    }
+    function acceptCookies() {
+        localStorage.setItem('cookieConsent', 'accepted');
+        document.getElementById('cookie-banner').style.display = 'none';
+    }
+    function declineCookies() {
+        localStorage.setItem('cookieConsent', 'declined');
+        document.getElementById('cookie-banner').style.display = 'none';
+    }
+</script>
 <body>
 
 <nav>
