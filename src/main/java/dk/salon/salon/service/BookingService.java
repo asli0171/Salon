@@ -67,6 +67,14 @@ public class BookingService {
             throw new RuntimeException("Booking er allerede aflyst");
         }
 
+        if (isWithin24Hours(booking)) {
+            BigDecimal cancellationFee = booking.getTotalPrice()
+                    .multiply(BigDecimal.valueOf(0.5));
+            booking.setTotalPrice(cancellationFee);
+        } else {
+            booking.setTotalPrice(BigDecimal.ZERO);
+        }
+
         booking.setStatus(BookingStatus.CANCELLED);
         booking.getSlot().setAvailable(true);
         slotRepository.save(booking.getSlot());
@@ -105,11 +113,26 @@ public class BookingService {
     }
 
     public List<Booking> getAllBookings() { return bookingRepository.findAll(); }
+
     public List<Booking> getBookingsByCustomer(Customer customer) {
         return bookingRepository.findByCustomer(customer);
     }
+
     public Optional<Booking> getBookingById(Long id) { return bookingRepository.findById(id); }
 
     @Transactional
     public void deleteBookingById(Long id) { bookingRepository.deleteById(id); }
+
+    @Transactional
+    public Booking markAsNoShow(Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking ikke fundet: " + bookingId));
+
+        if (booking.getStatus() != BookingStatus.CONFIRMED) {
+            throw new RuntimeException("Kun bekræftede bookinger kan markeres som ikke mødt op");
+        }
+
+        booking.setStatus(BookingStatus.NO_SHOW);
+        return bookingRepository.save(booking);
+    }
 }

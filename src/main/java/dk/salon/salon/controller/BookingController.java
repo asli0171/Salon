@@ -2,6 +2,7 @@ package dk.salon.salon.controller;
 
 import dk.salon.salon.dto.BookingRequestDTO;
 import dk.salon.salon.model.Booking;
+import dk.salon.salon.model.BookingStatus;
 import dk.salon.salon.model.Customer;
 import dk.salon.salon.repository.CustomerRepository;
 import dk.salon.salon.service.BookingService;
@@ -83,7 +84,7 @@ public class BookingController {
                             return ResponseEntity.ok(Map.of(
                                     "booking", cancelled,
                                     "chargeApplied", true,
-                                    "message", "Booking aflyst. Fuld pris opkræves da aflysning er inden for 24 timer.",
+                                    "message", "Booking aflyst. 50% gebyr opkræves da aflysning er inden for 24 timer.",
                                     "amount", cancelled.getTotalPrice()
                             ));
                         }
@@ -112,5 +113,34 @@ public class BookingController {
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
+    }
+
+    @PutMapping("/{id}/no-show")
+    public ResponseEntity<?> markNoShow(@PathVariable Long id, Authentication auth) {
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!isAdmin) {
+            return ResponseEntity.status(403).body(Map.of("error", "Kun admin kan markere no-show"));
+        }
+
+        return bookingService.getBookingById(id)
+                .map(booking -> {
+                    if (booking.getStatus() != BookingStatus.CONFIRMED) {
+                        return ResponseEntity.badRequest()
+                                .body(Map.of("error", "Kun bekræftede bookinger kan markeres som ikke mødt op"));
+                    }
+                    try {
+                        Booking updated = bookingService.markAsNoShow(id);
+                        return ResponseEntity.ok(Map.of(
+                                "booking", updated,
+                                "message", "Kunden er markeret som ikke mødt op. Fuld pris opkræves.",
+                                "amount", updated.getTotalPrice()
+                        ));
+                    } catch (RuntimeException e) {
+                        return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+                    }
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }

@@ -15,208 +15,76 @@
             --lbrown: #D4C9B8;
             --dbrown: #B8956A;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            background: var(--light);
-            color: var(--dark);
-            font-family: 'Jost', sans-serif;
-            font-weight: 300;
-            min-height: 100vh;
-        }
-
-        .admin-layout {
-            display: grid;
-            grid-template-columns: 180px 1fr;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            background: var(--beige);
-            border-right: 0.5px solid var(--lbrown);
-            padding: 24px 16px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sidebar-logo {
-            font-family: 'Jost', sans-serif;
-            font-size: 14px; font-weight: 500; letter-spacing: 4px;
-            color: var(--dark); margin-bottom: 28px; padding: 0 4px;
-            text-decoration: none; display: block;
-        }
-
-        .menu-item {
-            display: flex; align-items: center; gap: 8px;
-            padding: 8px 10px; border-radius: 6px; margin-bottom: 4px;
-            font-size: 12px; color: var(--muted); cursor: pointer;
-            text-decoration: none; transition: all 0.2s; border: none;
-            background: none; font-family: 'Jost', sans-serif; width: 100%;
-            text-align: left;
-        }
-
+        body { background: var(--light); color: var(--dark); font-family: 'Jost', sans-serif; font-weight: 300; min-height: 100vh; }
+        .admin-layout { display: grid; grid-template-columns: 180px 1fr; min-height: 100vh; }
+        .sidebar { background: var(--beige); border-right: 0.5px solid var(--lbrown); padding: 24px 16px; display: flex; flex-direction: column; }
+        .sidebar-logo { font-family: 'Jost', sans-serif; font-size: 14px; font-weight: 500; letter-spacing: 4px; color: var(--dark); margin-bottom: 28px; padding: 0 4px; text-decoration: none; display: block; }
+        .menu-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 6px; margin-bottom: 4px; font-size: 12px; color: var(--muted); cursor: pointer; text-decoration: none; transition: all 0.2s; border: none; background: none; font-family: 'Jost', sans-serif; width: 100%; text-align: left; }
         .menu-item:hover { background: var(--lbrown); color: var(--dark); }
         .menu-item.active { background: var(--lbrown); color: var(--dark); }
-
         .menu-spacer { flex: 1; }
-
-        .btn-logout {
-            display: flex; align-items: center; gap: 8px;
-            padding: 8px 10px; border-radius: 6px;
-            font-size: 12px; color: var(--muted); cursor: pointer;
-            background: none; border: none; font-family: 'Jost', sans-serif;
-            width: 100%; transition: all 0.2s; text-align: left;
-        }
-
+        .btn-logout { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 6px; font-size: 12px; color: var(--muted); cursor: pointer; background: none; border: none; font-family: 'Jost', sans-serif; width: 100%; transition: all 0.2s; text-align: left; }
         .btn-logout:hover { color: var(--dark); }
-
         .main { padding: 28px 36px; }
-
         .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
-
         .stat-card { padding: 16px 20px; }
-
         .stat-num { font-size: 28px; font-weight: 400; color: var(--dark); }
         .stat-label { font-size: 11px; color: var(--muted); margin-top: 4px; }
-
-        .section-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 14px;
-        }
-
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
         .section-title { font-size: 15px; font-weight: 500; color: var(--dark); }
-
-        .btn-add {
-            background: var(--cream); color: var(--dark); border: none;
-            padding: 8px 18px; font-family: 'Jost', sans-serif; font-size: 11px;
-            font-weight: 500; cursor: pointer; border-radius: 20px;
-            letter-spacing: 0.5px; transition: background 0.2s;
-        }
-
+        .btn-add { background: var(--cream); color: var(--dark); border: none; padding: 8px 18px; font-family: 'Jost', sans-serif; font-size: 11px; font-weight: 500; cursor: pointer; border-radius: 20px; letter-spacing: 0.5px; transition: background 0.2s; }
         .btn-add:hover { background: var(--dbrown); }
-
-        .table-wrap {
-            background: white; border-radius: 8px;
-            overflow: hidden; border: 0.5px solid var(--lbrown);
-            margin-bottom: 28px;
-        }
-
+        .table-wrap { background: white; border-radius: 8px; overflow: hidden; border: 0.5px solid var(--lbrown); margin-bottom: 28px; }
         table { width: 100%; border-collapse: collapse; }
-
-        th {
-            font-size: 11px; font-weight: 500; color: var(--dark);
-            text-align: left; padding: 10px 16px;
-            border-bottom: 0.5px solid var(--lbrown);
-            background: var(--cream);
-        }
-
-        td {
-            font-size: 12px; color: var(--dark);
-            padding: 11px 16px;
-            border-bottom: 0.5px solid var(--beige);
-        }
-
+        th { font-size: 11px; font-weight: 500; color: var(--dark); text-align: left; padding: 10px 16px; border-bottom: 0.5px solid var(--lbrown); background: var(--cream); }
+        td { font-size: 12px; color: var(--dark); padding: 11px 16px; border-bottom: 0.5px solid var(--beige); }
         tr:last-child td { border-bottom: none; }
-
-        .badge {
-            display: inline-block; font-size: 10px; font-weight: 400;
-            padding: 3px 12px; border-radius: 14px;
-        }
-
+        .badge { display: inline-block; font-size: 10px; font-weight: 400; padding: 3px 12px; border-radius: 14px; }
         .badge.confirmed { background: var(--cream); color: var(--dark); }
         .badge.cancelled { background: var(--lbrown); color: var(--muted); }
+        .badge.no_show { background: #f0dbd8; color: #8a3a3a; }
         .badge.available { background: #d8ead8; color: #3a6a3a; }
         .badge.taken { background: var(--lbrown); color: var(--muted); }
-
-        .btn-table {
-            font-size: 11px; color: var(--muted); background: none; border: none;
-            cursor: pointer; padding: 2px 8px; border-radius: 4px;
-            font-family: 'Jost', sans-serif;
-        }
-
+        .btn-table { font-size: 11px; color: var(--muted); background: none; border: none; cursor: pointer; padding: 2px 8px; border-radius: 4px; font-family: 'Jost', sans-serif; }
         .btn-table:hover { color: var(--dark); }
         .btn-table.delete:hover { color: #8a3a3a; }
-
+        .btn-table.noshow { color: #8a5a3a; }
+        .btn-table.noshow:hover { color: #5a1a1a; }
         .panel { display: none; }
         .panel.active { display: block; }
-
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(44,44,42,0.35);
-            display: none; align-items: center; justify-content: center; z-index: 200;
-        }
-
+        .modal-overlay { position: fixed; inset: 0; background: rgba(44,44,42,0.35); display: none; align-items: center; justify-content: center; z-index: 200; }
         .modal-overlay.open { display: flex; }
-
-        .modal {
-            background: var(--light); border-radius: 12px;
-            padding: 32px; width: 420px; max-width: 90vw;
-        }
-
+        .modal { background: var(--light); border-radius: 12px; padding: 32px; width: 420px; max-width: 90vw; }
         .modal-title { font-size: 16px; font-weight: 500; color: var(--dark); margin-bottom: 20px; }
-
         .form-group { margin-bottom: 16px; }
-
         label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 5px; }
-
-        input, select {
-            width: 100%; background: var(--beige); border: 0.5px solid var(--lbrown);
-            border-radius: 8px; padding: 10px 14px; font-family: 'Jost', sans-serif;
-            font-size: 13px; color: var(--dark); outline: none;
-        }
-
+        input, select { width: 100%; background: var(--beige); border: 0.5px solid var(--lbrown); border-radius: 8px; padding: 10px 14px; font-family: 'Jost', sans-serif; font-size: 13px; color: var(--dark); outline: none; }
         input:focus, select:focus { border-color: var(--cream); }
-
         .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
-
-        .btn-modal-cancel {
-            flex: 1; background: var(--beige); color: var(--muted); border: none;
-            padding: 11px; border-radius: 20px; font-family: 'Jost', sans-serif;
-            font-size: 12px; cursor: pointer;
-        }
-
-        .btn-modal-save {
-            flex: 1; background: var(--dark); color: var(--light); border: none;
-            padding: 11px; border-radius: 20px; font-family: 'Jost', sans-serif;
-            font-size: 12px; cursor: pointer;
-        }
-
+        .btn-modal-cancel { flex: 1; background: var(--beige); color: var(--muted); border: none; padding: 11px; border-radius: 20px; font-family: 'Jost', sans-serif; font-size: 12px; cursor: pointer; }
+        .btn-modal-save { flex: 1; background: var(--dark); color: var(--light); border: none; padding: 11px; border-radius: 20px; font-family: 'Jost', sans-serif; font-size: 12px; cursor: pointer; }
         .btn-modal-save:hover { background: #444441; }
-
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
         .loading { font-size: 12px; color: var(--muted); padding: 16px 0; }
     </style>
 </head>
 <body>
 
 <div class="admin-layout">
-
     <div class="sidebar">
         <a href="/" class="sidebar-logo">SALON</a>
-
-        <button class="menu-item active" id="menu-bookings" onclick="showPanel('bookings')">
-            Bookinger
-        </button>
-        <button class="menu-item" id="menu-services" onclick="showPanel('services')">
-            Services
-        </button>
-        <button class="menu-item" id="menu-hairdressers" onclick="showPanel('hairdressers')">
-            Frisører
-        </button>
-        <button class="menu-item" id="menu-slots" onclick="showPanel('slots')">
-            Tider
-        </button>
-
+        <button class="menu-item active" id="menu-bookings" onclick="showPanel('bookings')">Bookinger</button>
+        <button class="menu-item" id="menu-services" onclick="showPanel('services')">Services</button>
+        <button class="menu-item" id="menu-hairdressers" onclick="showPanel('hairdressers')">Frisører</button>
+        <button class="menu-item" id="menu-slots" onclick="showPanel('slots')">Tider</button>
         <div class="menu-spacer"></div>
-
         <form action="/logout" method="POST">
             <button type="submit" class="btn-logout">← Log ud</button>
         </form>
     </div>
 
     <div class="main">
-
         <div class="panel active" id="panel-bookings">
             <div class="stat-row">
                 <div class="stat-card">
@@ -232,24 +100,14 @@
                     <div class="stat-label">Omsætning i dag</div>
                 </div>
             </div>
-
             <div class="section-header">
                 <div class="section-title" id="bookings-date-title">Bookinger</div>
                 <button class="btn-add" onclick="showPanel('slots'); openSlotModal()">+ Opret tid</button>
             </div>
-
             <div class="table-wrap">
                 <table>
                     <thead>
-                    <tr>
-                        <th>Tid</th>
-                        <th>Kunde</th>
-                        <th>Service</th>
-                        <th>Frisør</th>
-                        <th>Pris</th>
-                        <th>Status</th>
-                        <th></th>
-                    </tr>
+                    <tr><th>Tid</th><th>Kunde</th><th>Service</th><th>Frisør</th><th>Pris</th><th>Status</th><th></th></tr>
                     </thead>
                     <tbody id="bookings-tbody">
                     <tr><td colspan="7" class="loading">Henter bookinger...</td></tr>
@@ -265,12 +123,8 @@
             </div>
             <div class="table-wrap">
                 <table>
-                    <thead>
-                    <tr><th>Navn</th><th>Varighed</th><th>Basispris</th><th></th></tr>
-                    </thead>
-                    <tbody id="services-tbody">
-                    <tr><td colspan="4" class="loading">Henter services...</td></tr>
-                    </tbody>
+                    <thead><tr><th>Navn</th><th>Varighed</th><th>Basispris</th><th></th></tr></thead>
+                    <tbody id="services-tbody"><tr><td colspan="4" class="loading">Henter services...</td></tr></tbody>
                 </table>
             </div>
         </div>
@@ -282,12 +136,8 @@
             </div>
             <div class="table-wrap">
                 <table>
-                    <thead>
-                    <tr><th>Navn</th><th>Bio</th><th>Status</th><th></th></tr>
-                    </thead>
-                    <tbody id="hairdressers-tbody">
-                    <tr><td colspan="4" class="loading">Henter frisører...</td></tr>
-                    </tbody>
+                    <thead><tr><th>Navn</th><th>Bio</th><th>Status</th><th></th></tr></thead>
+                    <tbody id="hairdressers-tbody"><tr><td colspan="4" class="loading">Henter frisører...</td></tr></tbody>
                 </table>
             </div>
         </div>
@@ -299,19 +149,15 @@
             </div>
             <div class="table-wrap">
                 <table>
-                    <thead>
-                    <tr><th>Dato</th><th>Tid</th><th>Frisør</th><th>Service</th><th>Status</th><th></th></tr>
-                    </thead>
-                    <tbody id="slots-tbody">
-                    <tr><td colspan="6" class="loading">Henter tider...</td></tr>
-                    </tbody>
+                    <thead><tr><th>Dato</th><th>Tid</th><th>Frisør</th><th>Service</th><th>Status</th><th></th></tr></thead>
+                    <tbody id="slots-tbody"><tr><td colspan="6" class="loading">Henter tider...</td></tr></tbody>
                 </table>
             </div>
         </div>
-
     </div>
 </div>
 
+<!-- Modals -->
 <div class="modal-overlay" id="slot-modal">
     <div class="modal">
         <div class="modal-title">Opret ny tid</div>
@@ -383,6 +229,13 @@
         return d.getDate() === n.getDate() && d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear();
     }
 
+    function statusBadge(status) {
+        if (status === 'CONFIRMED') return '<span class="badge confirmed">Bekræftet</span>';
+        if (status === 'CANCELLED') return '<span class="badge cancelled">Annulleret</span>';
+        if (status === 'NO_SHOW') return '<span class="badge no_show">Ikke mødt op</span>';
+        return `<span class="badge">${status}</span>`;
+    }
+
     async function loadBookings() {
         try {
             const res = await fetch('/api/bookings');
@@ -408,19 +261,35 @@
             bookings.sort((a, b) => new Date(a.slot?.startTime) - new Date(b.slot?.startTime));
             bookings.forEach(b => {
                 const tr = document.createElement('tr');
+                const noShowBtn = b.status === 'CONFIRMED'
+                    ? `<button class="btn-table noshow" onclick="markNoShow(${b.id})">Ikke mødt op</button>`
+                    : '';
                 tr.innerHTML = `
-          <td>${b.slot ? formatTime(b.slot.startTime) : '—'}</td>
-          <td>${b.customer?.username || '—'}</td>
-          <td>${b.slot?.service?.name || '—'}</td>
-          <td>${b.slot?.hairdresser?.name || '—'}</td>
-          <td>${b.totalPrice ? b.totalPrice + ' kr' : '—'}</td>
-          <td><span class="badge ${b.status === 'CONFIRMED' ? 'confirmed' : 'cancelled'}">${b.status === 'CONFIRMED' ? 'Bekræftet' : 'Annulleret'}</span></td>
-          <td><button class="btn-table delete" onclick="deleteBooking(${b.id})">Slet</button></td>
-        `;
+                    <td>${b.slot ? formatTime(b.slot.startTime) : '—'}</td>
+                    <td>${b.customer?.username || '—'}</td>
+                    <td>${b.slot?.service?.name || '—'}</td>
+                    <td>${b.slot?.hairdresser?.name || '—'}</td>
+                    <td>${b.totalPrice ? b.totalPrice + ' kr' : '—'}</td>
+                    <td>${statusBadge(b.status)}</td>
+                    <td>
+                        ${noShowBtn}
+                        <button class="btn-table delete" onclick="deleteBooking(${b.id})">Slet</button>
+                    </td>
+                `;
                 tbody.appendChild(tr);
             });
         } catch (e) {
             document.getElementById('bookings-tbody').innerHTML = '<tr><td colspan="7" class="loading">Kunne ikke hente bookinger.</td></tr>';
+        }
+    }
+
+    async function markNoShow(bookingId) {
+        if (!confirm('Marker kunden som ikke mødt op? Fuld pris opkræves.')) return;
+        const res = await fetch(`/api/bookings/${bookingId}/no-show`, { method: 'PUT' });
+        if (res.ok) {
+            loadBookings();
+        } else {
+            alert('Fejl ved markering.');
         }
     }
 
@@ -437,13 +306,13 @@
             slots.forEach(s => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-          <td>${formatDate(s.startTime)}</td>
-          <td>${formatTime(s.startTime)} – ${formatTime(s.endTime)}</td>
-          <td>${s.hairdresser?.name || '—'}</td>
-          <td>${s.service?.name || '—'}</td>
-          <td><span class="badge ${s.isAvailable ? 'available' : 'taken'}">${s.isAvailable ? 'Ledigt' : 'Booket'}</span></td>
-          <td><button class="btn-table delete" onclick="deleteSlot(${s.id})">Slet</button></td>
-        `;
+                    <td>${formatDate(s.startTime)}</td>
+                    <td>${formatTime(s.startTime)} – ${formatTime(s.endTime)}</td>
+                    <td>${s.hairdresser?.name || '—'}</td>
+                    <td>${s.service?.name || '—'}</td>
+                    <td><span class="badge ${s.isAvailable ? 'available' : 'taken'}">${s.isAvailable ? 'Ledigt' : 'Booket'}</span></td>
+                    <td><button class="btn-table delete" onclick="deleteSlot(${s.id})">Slet</button></td>
+                `;
                 tbody.appendChild(tr);
             });
         } catch (e) {
@@ -461,14 +330,14 @@
             list.forEach(h => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-          <td>${h.name}</td>
-          <td>${h.bio || '—'}</td>
-          <td><span class="badge ${h.active ? 'available' : 'cancelled'}">${h.active ? 'Aktiv' : 'Inaktiv'}</span></td>
-          <td>
-            <button class="btn-table" onclick="toggleHairdresser(${h.id}, ${h.active})">${h.active ? 'Deaktiver' : 'Aktiver'}</button>
-            <button class="btn-table delete" onclick="deleteHairdresser(${h.id})">Slet</button>
-          </td>
-        `;
+                    <td>${h.name}</td>
+                    <td>${h.bio || '—'}</td>
+                    <td><span class="badge ${h.active ? 'available' : 'cancelled'}">${h.active ? 'Aktiv' : 'Inaktiv'}</span></td>
+                    <td>
+                        <button class="btn-table" onclick="toggleHairdresser(${h.id}, ${h.active})">${h.active ? 'Deaktiver' : 'Aktiver'}</button>
+                        <button class="btn-table delete" onclick="deleteHairdresser(${h.id})">Slet</button>
+                    </td>
+                `;
                 tbody.appendChild(tr);
             });
         } catch (e) {
@@ -486,11 +355,11 @@
             list.forEach(s => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-          <td>${s.name}</td>
-          <td>${s.durationMinutes} min</td>
-          <td>${s.basePrice} kr</td>
-          <td><button class="btn-table delete" onclick="deleteService(${s.id})">Slet</button></td>
-        `;
+                    <td>${s.name}</td>
+                    <td>${s.durationMinutes} min</td>
+                    <td>${s.basePrice} kr</td>
+                    <td><button class="btn-table delete" onclick="deleteService(${s.id})">Slet</button></td>
+                `;
                 tbody.appendChild(tr);
             });
         } catch (e) {
@@ -585,6 +454,5 @@
 
     loadBookings();
 </script>
-
 </body>
 </html>

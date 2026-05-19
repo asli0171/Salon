@@ -2,5 +2,6 @@ package dk.salon.salon.model;
 
 public enum BookingStatus {
     CONFIRMED,
-    CANCELLED
+    CANCELLED,
+    NO_SHOW
 }
