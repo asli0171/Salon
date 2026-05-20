@@ -8,7 +8,18 @@ Projektet følger en klassisk lagdelt arkitektur med mikroserviceudvidelse:
 
 ## Kickoff og krav
 
-Projektet tog udgangspunkt i en reel frisørsalon som kunde. Kunden ønskede et online booking-system der kunne erstatte telefonbooking og give kunderne mulighed for selv at booke tider direkte på nettet.
+Projektet tog udgangspunkt i et kundemøde med ejeren af HS Hair & Beauty, Vendersgade 17, 1363 København K. Kunden ønsker et online booking-system der kan erstatte telefonbooking og give kunderne mulighed for selv at booke tider direkte på nettet.
+
+Kunden åbnede salonen for få måneder siden og tilbyder både frisør- og kosmetologbehandlinger. Kunden ønsker desuden på sigt at åbne en ny salon i Hvidovre med fokus udelukkende på frisørbehandlinger — dette er planlagt som en fremtidig udvidelse af systemet.
+
+### Funktionelle krav fra kunden
+
+- Kunder skal kunne booke tider online
+- Kunder skal kunne aflyse deres tid
+- Frisøren skal kunne se alle bookinger
+- Systemet skal vise ledige tider
+- Kontaktinformation og adresse skal vises på hjemmesiden
+- Systemet skal være nemt at bruge for både frisør og kunde
 
 ### MoSCoW-prioritering
 
@@ -20,19 +31,21 @@ Projektet tog udgangspunkt i en reel frisørsalon som kunde. Kunden ønskede et 
 - Passwords krypteres med BCrypt
 
 **Should have**
-- 24-timers aflysningsregel — kunden kan aflyse gratis op til 24 timer før
+- Aflysningsregler — 50% gebyr ved aflysning inden for 24 timer, fuld pris ved udeblivelse
 - Prisberegning via separat mikroservice
 - CI/CD pipeline der tester og bygger automatisk
 
 **Could have**
 - Kundelogin og profilside — kunden ønskede dette for at slippe for telefonopkald og manuelt administrativt arbejde. Kunden var bevidst om at det tilføjer kompleksitet men vurderede det som et vigtigt mål for systemet
 - Adminpanel med overblik over alle bookinger
+- Cookie-banner og sessionshåndtering
+- Support for flere afdelinger (Hvidovre-klinikken)
+
 
 **Won't have (i denne iteration)**
 - Betalingsintegration
 - SMS/email bekræftelse
 - Kalenderintegration
-
 
 ### Hovedapplikation (Salon)
 
