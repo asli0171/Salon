@@ -520,8 +520,15 @@
         if (e.target === this) closeModal('cancel-modal');
     });
 
-    loadUser();
-    loadBookings();
+    loadUser().then(() => {
+        const savedBooking = sessionStorage.getItem('bookingState');
+        if (savedBooking) {
+            sessionStorage.removeItem('bookingState');
+            window.location.href = '/booking.html';
+        } else {
+            loadBookings();
+        }
+    });
 </script>
 
 </body>

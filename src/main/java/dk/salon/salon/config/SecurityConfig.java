@@ -58,7 +58,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/index.html", "/booking.html",
                                 "/login.html", "/confirm.html", "/register.html",
-                                "/mypage.html", "/om.html","/frisør.html", "/kosmetolog.html").permitAll()
+                                "/mypage.html", "/om.html", "/frisoer.html", "/kosmetolog.html").permitAll()
                         .requestMatchers("/**.css", "/**.js").permitAll()
                         .requestMatchers("/api/hairdressers").permitAll()
                         .requestMatchers("/api/hairdressers/{id}").permitAll()
@@ -67,8 +67,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/slots").permitAll()
                         .requestMatchers("/api/slots/{id}").permitAll()
                         .requestMatchers("/api/customers/register").permitAll()
-                        .requestMatchers("/api/bookings/**").authenticated()
                         .requestMatchers("/api/customers/me").authenticated()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/bookings").permitAll()
+                        .requestMatchers("/api/bookings/find").permitAll()
+                        .requestMatchers("/api/bookings/**").authenticated()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/hairdressers/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/services/**").hasRole("ADMIN")
