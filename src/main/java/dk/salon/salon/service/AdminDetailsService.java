@@ -1,12 +1,14 @@
 package dk.salon.salon.service;
 
 import dk.salon.salon.repository.AdminRepository;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
+@Primary
 public class AdminDetailsService implements UserDetailsService {
 
     private final AdminRepository adminRepository;

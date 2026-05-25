@@ -144,6 +144,17 @@
         .hairdresser-name { font-size: 12px; font-weight: 500; color: var(--dark); }
         .hairdresser-spec { font-size: 11px; color: var(--muted); }
 
+        .date-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+
+        .date-chip {
+            background: var(--beige); border-radius: 8px; padding: 8px 14px;
+            text-align: center; font-size: 12px; color: var(--dark);
+            cursor: pointer; transition: all 0.2s; border: 1.5px solid transparent;
+        }
+
+        .date-chip:hover { border-color: var(--lbrown); }
+        .date-chip.selected { background: var(--dark); color: var(--light); border-color: var(--dark); }
+
         .time-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 
         .time-chip {
@@ -193,7 +204,6 @@
 
         .loading { font-size: 13px; color: var(--muted); }
 
-        /* CONFIRM STEP */
         .confirm-box {
             background: var(--beige); border-radius: 10px; padding: 28px;
             max-width: 480px;
@@ -285,9 +295,12 @@
                 <p class="loading">Henter frisører...</p>
             </div>
 
+            <div class="step-section-title">Vælg dato</div>
+            <div class="date-grid" id="date-grid"></div>
+
             <div class="step-section-title">Vælg en tid</div>
             <div class="time-grid" id="time-grid">
-                <p class="loading">Vælg en frisør for at se ledige tider...</p>
+                <p class="loading">Vælg en frisør og dato for at se ledige tider...</p>
             </div>
         </div>
 
@@ -334,10 +347,78 @@
 
 <script>
     let currentStep = 1;
-    let selected = { service: null, hairdresser: null, slot: null };
+    let selected = { service: null, hairdresser: null, slot: null, date: null };
+    let allSlots = [];
+    let selectedDate = null;
 
     const params = new URLSearchParams(window.location.search);
     const preSelectedServiceId = params.get('serviceId');
+
+    function generateDates() {
+        const dates = [];
+        const today = new Date();
+        for (let i = 0; i < 60; i++) {
+            const d = new Date(today);
+            d.setDate(today.getDate() + i);
+            const day = d.getDay();
+            if (day !== 0) dates.push(d); // ingen søndag
+        }
+        return dates;
+    }
+
+    function renderDateGrid(slots) {
+        const grid = document.getElementById('date-grid');
+        grid.innerHTML = '';
+
+        const availableDates = new Set(slots.map(s => {
+            const d = new Date(s.startTime);
+            return d.toDateString();
+        }));
+
+        const dates = generateDates();
+        dates.forEach(d => {
+            const dateStr = d.toDateString();
+            if (!availableDates.has(dateStr)) return;
+
+            const chip = document.createElement('div');
+            chip.className = 'date-chip';
+            chip.textContent = d.toLocaleDateString('da-DK', { weekday: 'short', day: 'numeric', month: 'short' });
+            chip.onclick = () => {
+                document.querySelectorAll('.date-chip').forEach(c => c.classList.remove('selected'));
+                chip.classList.add('selected');
+                selectedDate = dateStr;
+                renderTimeSlots(slots, dateStr);
+            };
+            grid.appendChild(chip);
+        });
+    }
+
+    function renderTimeSlots(slots, dateStr) {
+        const grid = document.getElementById('time-grid');
+        grid.innerHTML = '';
+
+        const daySlots = slots.filter(s => new Date(s.startTime).toDateString() === dateStr && s.available);
+
+        if (daySlots.length === 0) {
+            grid.innerHTML = '<p class="loading">Ingen ledige tider denne dag.</p>';
+            return;
+        }
+
+        daySlots.forEach(slot => {
+            const start = new Date(slot.startTime);
+            const chip = document.createElement('div');
+            chip.className = 'time-chip';
+            chip.textContent = start.toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' });
+            chip.onclick = () => {
+                document.querySelectorAll('.time-chip').forEach(c => c.classList.remove('selected'));
+                chip.classList.add('selected');
+                selected.slot = slot;
+                updateSummary();
+                updateUI();
+            };
+            grid.appendChild(chip);
+        });
+    }
 
     function updateUI() {
         const pct = currentStep === 1 ? 33 : currentStep === 2 ? 66 : 100;
@@ -402,46 +483,64 @@
             document.getElementById('conf-time').textContent = start.toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' });
         }
     }
-
     async function loadServices() {
         try {
             const res = await fetch('/api/services');
             const services = await res.json();
             const grid = document.getElementById('service-grid');
             grid.innerHTML = '';
-            services.forEach(s => {
-                const card = document.createElement('div');
-                card.className = 'service-option';
-                card.dataset.id = s.id;
-                card.innerHTML = `
-          <div class="service-opt-img">
-            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
-              <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
-              <path d="M21 15l-5-5L5 21"/>
-            </svg>
-          </div>
-          <div class="service-opt-body">
-            <div class="service-opt-name">${s.name}</div>
-            <div class="service-opt-meta">${s.durationMinutes} min</div>
-            <div class="service-opt-price">fra ${s.basePrice} kr</div>
-          </div>
-        `;
-                card.onclick = () => {
-                    document.querySelectorAll('.service-option').forEach(c => c.classList.remove('selected'));
-                    card.classList.add('selected');
-                    selected.service = s;
-                    selected.hairdresser = null;
-                    selected.slot = null;
-                    updateSummary();
-                    updateUI();
-                };
-                grid.appendChild(card);
 
-                // Pre-select hvis serviceId i URL
-                if (preSelectedServiceId && s.id == preSelectedServiceId) {
-                    card.click();
-                }
-            });
+            const frisørKeywords = ['klip', 'frisør', 'farve', 'balayage', 'babylights', 'airtouch', 'toning', 'vask', 'pandehår', 'maskineklip', 'børneklip', 'styling', 'kur', 'føn', 'helfarve', 'herreklip', 'dame'];
+            const kosmetologKeywords = ['ansigt', 'peeling', 'microneedling', 'diamant', 'aha', 'kemisk', 'luksus', 'bryn', 'vipper', 'tråd', 'pincet'];
+
+            const frisørServices = services.filter(s => frisørKeywords.some(k => s.name.toLowerCase().includes(k)));
+            const kosmetologServices = services.filter(s => kosmetologKeywords.some(k => s.name.toLowerCase().includes(k) || (s.description || '').toLowerCase().includes(k)));
+
+            function renderSection(title, list) {
+                if (!list.length) return;
+                const heading = document.createElement('div');
+                heading.className = 'step-section-title';
+                heading.style.marginTop = '24px';
+                heading.textContent = title;
+                grid.appendChild(heading);
+
+                const sectionGrid = document.createElement('div');
+                sectionGrid.className = 'service-grid';
+                list.forEach(s => {
+                    const card = document.createElement('div');
+                    card.className = 'service-option';
+                    card.dataset.id = s.id;
+                    card.innerHTML = `
+                    <div class="service-opt-img">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
+                            <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+                            <path d="M21 15l-5-5L5 21"/>
+                        </svg>
+                    </div>
+                    <div class="service-opt-body">
+                        <div class="service-opt-name">${s.name}</div>
+                        <div class="service-opt-meta">${s.durationMinutes} min</div>
+                        <div class="service-opt-price">fra ${s.basePrice} kr</div>
+                    </div>
+                `;
+                    card.onclick = () => {
+                        document.querySelectorAll('.service-option').forEach(c => c.classList.remove('selected'));
+                        card.classList.add('selected');
+                        selected.service = s;
+                        selected.hairdresser = null;
+                        selected.slot = null;
+                        updateSummary();
+                        updateUI();
+                    };
+                    sectionGrid.appendChild(card);
+                    if (preSelectedServiceId && s.id == preSelectedServiceId) card.click();
+                });
+                grid.appendChild(sectionGrid);
+            }
+
+            renderSection('Frisør', frisørServices);
+            renderSection('Kosmetolog', kosmetologServices);
+
         } catch (e) {
             document.getElementById('service-grid').innerHTML = '<p class="loading">Kunne ikke hente services.</p>';
         }
@@ -457,19 +556,20 @@
                 const card = document.createElement('div');
                 card.className = 'hairdresser-option';
                 card.innerHTML = `
-          <div class="hairdresser-photo">
-            <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
-              <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-            </svg>
-          </div>
-          <div class="hairdresser-name">${h.name}</div>
-          <div class="hairdresser-spec">${h.bio ? h.bio.substring(0, 30) + '...' : ''}</div>
-        `;
+                    <div class="hairdresser-photo">
+                        <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
+                            <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                        </svg>
+                    </div>
+                    <div class="hairdresser-name">${h.name}</div>
+                    <div class="hairdresser-spec">${h.bio ? h.bio.substring(0, 30) + '...' : ''}</div>
+                `;
                 card.onclick = () => {
                     document.querySelectorAll('.hairdresser-option').forEach(c => c.classList.remove('selected'));
                     card.classList.add('selected');
                     selected.hairdresser = h;
                     selected.slot = null;
+                    selectedDate = null;
                     updateSummary();
                     updateUI();
                     loadSlots(h.id);
@@ -484,31 +584,18 @@
     async function loadSlots(hairdresserId) {
         const grid = document.getElementById('time-grid');
         grid.innerHTML = '<p class="loading">Henter ledige tider...</p>';
+        document.getElementById('date-grid').innerHTML = '';
         try {
             const res = await fetch(`/api/slots?hairdresserId=${hairdresserId}`);
-            const slots = await res.json();
-            grid.innerHTML = '';
+            allSlots = await res.json();
 
-            if (slots.length === 0) {
+            if (allSlots.length === 0) {
                 grid.innerHTML = '<p class="loading">Ingen ledige tider for denne frisør.</p>';
                 return;
             }
 
-            slots.forEach(slot => {
-                const start = new Date(slot.startTime);
-                const chip = document.createElement('div');
-                chip.className = 'time-chip';
-                chip.textContent = start.toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' });
-                chip.title = start.toLocaleDateString('da-DK', { weekday: 'long', day: 'numeric', month: 'long' });
-                chip.onclick = () => {
-                    document.querySelectorAll('.time-chip').forEach(c => c.classList.remove('selected'));
-                    chip.classList.add('selected');
-                    selected.slot = slot;
-                    updateSummary();
-                    updateUI();
-                };
-                grid.appendChild(chip);
-            });
+            renderDateGrid(allSlots);
+            grid.innerHTML = '<p class="loading">Vælg en dato for at se ledige tider.</p>';
         } catch (e) {
             grid.innerHTML = '<p class="loading">Kunne ikke hente tider.</p>';
         }
@@ -524,6 +611,15 @@
             });
 
             if (res.ok) {
+                const start = new Date(selected.slot.startTime);
+                sessionStorage.setItem('lastBooking', JSON.stringify({
+                    service: selected.service?.name,
+                    hairdresser: selected.hairdresser?.name,
+                    date: start.toLocaleDateString('da-DK', { weekday: 'long', day: 'numeric', month: 'long' }),
+                    time: start.toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' }),
+                    duration: selected.service?.durationMinutes + ' min',
+                    price: 'fra ' + selected.service?.basePrice + ' kr'
+                }));
                 window.location.href = '/confirm.html';
             } else if (res.status === 401 || res.status === 403) {
                 window.location.href = '/login.html';
@@ -538,6 +634,14 @@
 
     loadServices();
     updateUI();
+
+    async function checkAuth() {
+        const res = await fetch('/api/customers/me');
+        if (res.status === 401 || res.status === 403) {
+            window.location.href = '/login.html?redirect=/booking.html';
+        }
+    }
+    checkAuth();
 </script>
 
 </body>

@@ -1,7 +1,7 @@
 package dk.salon.salon.config;
 
+import dk.salon.salon.repository.CustomerRepository;
 import dk.salon.salon.service.AdminDetailsService;
-import dk.salon.salon.service.CustomerDetailsService;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,37 +9,43 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+
 import java.util.List;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
     private final AdminDetailsService adminDetailsService;
-    private final CustomerDetailsService customerDetailsService;
+    private final CustomerRepository customerRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public SecurityConfig(AdminDetailsService adminDetailsService,
-                          CustomerDetailsService customerDetailsService) {
+                          CustomerRepository customerRepository,
+                          PasswordEncoder passwordEncoder) {
         this.adminDetailsService = adminDetailsService;
-        this.customerDetailsService = customerDetailsService;
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        this.customerRepository = customerRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Bean
     public AuthenticationManager authenticationManager() {
         DaoAuthenticationProvider adminProvider = new DaoAuthenticationProvider();
         adminProvider.setUserDetailsService(adminDetailsService);
-        adminProvider.setPasswordEncoder(passwordEncoder());
+        adminProvider.setPasswordEncoder(passwordEncoder);
+
+        UserDetailsService customerDetailsService = username ->
+                customerRepository.findByUsername(username)
+                        .orElseThrow(() -> new UsernameNotFoundException("Customer not found: " + username));
 
         DaoAuthenticationProvider customerProvider = new DaoAuthenticationProvider();
         customerProvider.setUserDetailsService(customerDetailsService);
-        customerProvider.setPasswordEncoder(passwordEncoder());
+        customerProvider.setPasswordEncoder(passwordEncoder);
 
         return new ProviderManager(List.of(adminProvider, customerProvider));
     }
@@ -52,7 +58,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/index.html", "/booking.html",
                                 "/login.html", "/confirm.html", "/register.html",
-                                "/mypage.html", "/om.html").permitAll()
+                                "/mypage.html", "/om.html","/frisør.html", "/kosmetolog.html").permitAll()
                         .requestMatchers("/**.css", "/**.js").permitAll()
                         .requestMatchers("/api/hairdressers").permitAll()
                         .requestMatchers("/api/hairdressers/{id}").permitAll()
@@ -72,10 +78,11 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginProcessingUrl("/login")
                         .loginPage("/login.html")
+                        .failureUrl("/login.html?error=true")
                         .successHandler((request, response, authentication) -> {
                             boolean isAdmin = authentication.getAuthorities().stream()
                                     .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
-                            response.sendRedirect(isAdmin ? "/admin.html" : "/");
+                            response.sendRedirect(isAdmin ? "/admin.html" : "/mypage.html");
                         })
                 )
                 .logout(logout -> logout.logoutSuccessUrl("/login.html"))
@@ -91,7 +98,7 @@ public class SecurityConfig {
     public ServletContextInitializer sessionConfig() {
         return servletContext -> {
             servletContext.getSessionCookieConfig().setHttpOnly(true);
-            servletContext.getSessionCookieConfig().setMaxAge(3600); // 1 time
+            servletContext.getSessionCookieConfig().setMaxAge(3600);
             servletContext.getSessionCookieConfig().setName("SALON_SESSION");
         };
     }

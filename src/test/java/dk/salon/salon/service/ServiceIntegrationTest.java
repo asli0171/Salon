@@ -2,6 +2,7 @@ package dk.salon.salon.service;
 
 import dk.salon.salon.model.Service;
 import dk.salon.salon.repository.ServiceRepository;
+import dk.salon.salon.repository.SlotRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ServiceIntegrationTest {
 
     @Autowired
+    private SlotRepository slotRepository;
+
+    @Autowired
     private ServiceRepository serviceRepository;
 
     @Autowired
@@ -24,6 +28,7 @@ class ServiceIntegrationTest {
 
     @Test
     void test_Get_Services_From_Database() {
+        slotRepository.deleteAll();
         serviceRepository.deleteAll();
 
         Service service = new Service();
